@@ -3,7 +3,8 @@
 # Laden der erforderlichen Bibliothek
 library(methods)
 setClass(
-    "TimeSeriesGenerator" 
+    "TimeSeriesGenerator",
+    contains="VIRTUAL"
     
 )
 # Definition der S4-Klasse für AR(p) Zeitreihe
