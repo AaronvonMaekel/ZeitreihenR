@@ -10,11 +10,9 @@ setClass(
 setClass(
     "AR_Generator",
     slots = list(
-        #n = "numeric",
         ar_params = "numeric",
         start_values= "numeric",
         sd = "numeric"
-        #data = "numeric"
     ),
     contains="TimeSeriesGenerator",
     prototype = list(ar_params = NA_real_,start_values=NA_real_,sd=1)
@@ -84,11 +82,86 @@ ar_params <- c(0.6, 0.6)  # AR(2)-Modell
 sd <- 1
 start_values = c(1,1)
 # Erstellen eines Objekts der ARTimeSeries-Klasse
-ar_time_gen <- new("AR_Generator",start_values = start_values, ar_params = ar_params, sd = sd)
+ar_time_series <- new("AR_Generator",start_values = start_values, ar_params = ar_params, sd = sd)
 
 # Generieren der AR(p)-Zeitreihe
-ar_time_series <- generateData(ar_time_gen,n)
+ar_time_series <- generateData(ar_time_series,n)
 
 # Plotten der AR(p)-Zeitreihe
 plot(ar_time_series)
+
+
+
+# Definition der S4-Klasse für MA(q) Zeitreihe
+setClass(
+    "MA_Generator",
+    slots = list(
+        ma_params = "numeric",
+        sd = "numeric"
+    ),
+    contains="TimeSeriesGenerator",
+    prototype = list(ma_params = NA_real_,sd=1)
+    
+)
+
+# Benutzerdefinierter Konstruktor, nur benötigt wenn new nicht ausreicht
+#MA_Generator <- function(ma_params = NA_real_,sd=1) {
+#custom stuff
+#    new("MA_Generator", ma_params=ma_params,sd=sd)
+#}
+
+setValidity("MA_Generator", function(object) {
+   # if (length(ar_params) != length(start_values)) {
+        "The number of starting values does not coincide with the amount of coefficients"
+    #} else {
+        TRUE
+  #  }
+})
+
+
+# Methode zur Generierung von MA(q) Daten
+setGeneric(
+    name = "generateData",
+    def = function(object,n) {
+        standardGeneric("generateData")
+    }
+)
+
+setMethod(
+    "generateData",
+    "MA_Generator",
+    function(object,n) {
+        
+        ma_params <- object@ma_params
+        q <- length(ma_params)
+        
+        # Initialisieren der Zeitreihe mit Nullen
+        time_series <- numeric(n)
+        
+        # White-Noise-Komponente generieren
+        noise <- rnorm(n+q , 0, object@sd)
+    
+        
+        # Generieren der MA(q)-Zeitreihe
+        for (t in (q + 1):(n + q)) {
+            time_series[t] <- sum(ma_params * rev(time_series[(t-q):(t-1)])) + noise[t]
+        }
+        
+        return(time_series)
+    }
+)
+
+# Beispielnutzung der S4-Klasse
+set.seed(123)
+n <- 10
+ma_params <- c(0.6, 0.6)  # AR(2)-Modell
+sd <- 1
+# Erstellen eines Objekts der MATimeSeries-Klasse
+ma_generator <- new("MA_Generator", ma_params = ma_params, sd = sd)
+
+# Generieren der MA(q)-Zeitreihe
+ma_time_series <- generateData(ma_generator,n)
+
+# Plotten der MA(q)-Zeitreihe
+plot(ma_time_series)
 
