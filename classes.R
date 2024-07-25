@@ -82,12 +82,12 @@ set.seed(123)
 n <- 10
 ar_params <- c(0.6, 0.6)  # AR(2)-Modell
 sd <- 1
-start_values = c(1,1,1)
+start_values = c(1,1)
 # Erstellen eines Objekts der ARTimeSeries-Klasse
-ar_time_series <- new("AR_Generator",start_values = start_values, ar_params = ar_params, sd = sd)
+ar_time_gen <- new("AR_Generator",start_values = start_values, ar_params = ar_params, sd = sd)
 
 # Generieren der AR(p)-Zeitreihe
-ar_time_series <- generateData(ar_time_series,n)
+ar_time_series <- generateData(ar_time_gen,n)
 
 # Plotten der AR(p)-Zeitreihe
 plot(ar_time_series)
