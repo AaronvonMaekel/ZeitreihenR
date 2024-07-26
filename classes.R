@@ -166,3 +166,18 @@ ma_time_series <- generateData(ma_generator,n)
 # Plotten der MA(q)-Zeitreihe
 plot(ma_time_series)
 
+# auto covariance funktion (hier wird angenommen ts ist noch keine Klasse)
+ACF <- function(ts,h){
+    stopifnot("Input is not of type numeric"=class(ts)=="numeric")
+    stopifnot("index out of bounds"=abs(h)<length(ts))
+    n <- length(ts)
+    smpl_mean <- mean(ts)
+    
+    summe <-  (1/n) * (ts[(1+abs(h)):n]-smpl_mean) %*% (ts[1:(n-abs(h))]-smpl_mean)
+    return(summe)
+}
+
+
+
+ts <- ma_time_series
+plot(sapply(1:(length(ts)-1),function(h){ACF(ts,h)}))
