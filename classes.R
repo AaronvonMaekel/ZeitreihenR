@@ -53,7 +53,7 @@ AR <- function(ar_params = NA_real_,start_values=NA_real_,n=1,sd=1) {
     
     # Generieren der AR(p)-Zeitreihe
     for (t in (p + 1):(n + p)) {
-        time_series[t] <- sum(ar_params * rev(time_series[(t-p):(t-1)])) + noise[t]
+        time_series[t] <- sum(ar_params * rev(time_series[(t-p):(t-1)])) + noise[t-p]
     }
     
     # Entfernen der zusätzlichen Initialisierungswerte
@@ -97,6 +97,9 @@ setValidity("TimeSeries", function(object){
     if (!is.atomic(object@n)){
         "length is not atomic"
     }
+    else if (!is.numeric(object@n)){
+        "length is not a numeric value"
+    }
     else if (0>object@n){
         "length is a negative number"
     }
@@ -109,15 +112,8 @@ setValidity("TimeSeries", function(object){
     else if (0>object@sd){
         "Standard deviation is negative"
     }
-    else if(length(object@data)!=object@n){
-        "length of data is not equal to noted length"
-    }
-    else if(!is.numeric(object@data)){
-        "Data is not numeric"
-    }
-    else if (any(is.na(object@data))){
-        "there are NA values in the data"
-    }
+    
+    
     else{
         
         TRUE
@@ -132,11 +128,20 @@ setValidity("AR", function(object) {
     else if(any(is.na(object@start_values))){
         "there are NA start values"
     }
-    
     else if(any(is.na(object@ar_params))){
-        "there are NA AR Parameters"
+        "there are NA AR-Parameters"
     }
-    else {
+    else if(length(object@data)!=object@n){
+        "length of data is not equal to noted length"
+    }
+    else if(!is.numeric(object@data)){
+        "Data is not numeric"
+    }
+    else if (any(is.na(object@data))){
+        print(object@data)
+        "there are NA values in the data"
+    }
+        else {
         TRUE
     }
 })
@@ -144,6 +149,17 @@ setValidity("AR", function(object) {
 setValidity("MA", function(object) {
     if(any(is.na(object@ma_params))){
         "there are NA MA-Parameters"
+    } else if(!is.numeric(object@ma_params)){
+        "MA-Parameters not numeric"
+    }
+    else if(length(object@data)!=object@n){
+        "length of data is not equal to noted length"
+    }
+    else if(!is.numeric(object@data)){
+        "Data is not numeric"
+    }
+    else if (any(is.na(object@data))){
+        "there are NA values in the data"
     }
     else {
     TRUE
@@ -181,7 +197,7 @@ setMethod(
         }
         
         # Entfernen der zusätzlichen Initialisierungswerte
-        #time_series <- time_series[(p + 1):(n + p)]
+        time_series <- time_series[(p + 1):(n + p)]
         object@data = time_series
         
     }
@@ -241,7 +257,7 @@ plot(ma_time_series@data)
 #----------------------------
 # auto covariance funktion (hier wird angenommen ts_obj ist eine Klassenobjekt)
 ACF <- function(ts_obj,h){
-    #check validity of object again
+    validObject(ts_obj)
     ts <- ts_obj@data
     n <- ts_obj@n
     stopifnot("Input is not of type numeric"=class(ts)=="numeric")
