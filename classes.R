@@ -131,9 +131,9 @@ setValidity("AR", function(object) {
     else if(any(is.na(object@ar_params))){
         "there are NA AR-Parameters"
     }
-    else if(length(object@data)!=object@n){
-        "length of data is not equal to noted length"
-    }
+    #else if(length(object@data)!=object@n){
+    #    "length of data is not equal to noted length"
+    #}
     else if(!is.numeric(object@data)){
         "Data is not numeric"
     }
@@ -152,9 +152,9 @@ setValidity("MA", function(object) {
     } else if(!is.numeric(object@ma_params)){
         "MA-Parameters not numeric"
     }
-    else if(length(object@data)!=object@n){
-        "length of data is not equal to noted length"
-    }
+    #else if(length(object@data)!=object@n){
+    #    "length of data is not equal to noted length"
+    #}
     else if(!is.numeric(object@data)){
         "Data is not numeric"
     }
@@ -272,3 +272,4 @@ ACF <- function(ts_obj,h){
 
 
 plot(sapply(1:(ma_time_series@n-1),function(h){ACF(ma_time_series,h)}))
+
