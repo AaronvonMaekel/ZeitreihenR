@@ -63,7 +63,7 @@ AR <- function(ar_params = NA_real_,start_values=NA_real_,n=1,sd=1) {
     new("AR",
         ar_params=ar_params,
         start_values=start_values,
-        n=n,
+        n=n+p,
         sd=sd,
         data= time_series)
 }
@@ -255,21 +255,21 @@ ma_time_series <- MA(ma_params = ma_params, sd = sd,n=n)
 plot(ma_time_series@data)
 
 #----------------------------
-# auto covariance funktion (hier wird angenommen ts_obj ist eine Klassenobjekt)
+# auto covariance funktion (hier wird angenommen, dass ts_obj ein Klassenobjekt ist)
 ACF <- function(ts_obj,h){
     validObject(ts_obj)
     ts <- ts_obj@data
     n <- ts_obj@n
-    stopifnot("Input is not of type numeric"=class(ts)=="numeric")
+    stopifnot("Input is not of type numeric"=class(ts)=="numeric")  # Do we still need this check? I assume this is done in the Validate Section
     stopifnot("index out of bounds"=abs(h)<ts_obj@n)
     
     smpl_mean <- mean(ts)
     
     summe <-  (1/n) * (ts[(1+abs(h)):n]-smpl_mean) %*% (ts[1:(n-abs(h))]-smpl_mean)
-    return(summe)
+    return(summe[1][1])
 }
 
 
-
 plot(sapply(1:(ma_time_series@n-1),function(h){ACF(ma_time_series,h)}))
+
 
