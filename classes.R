@@ -42,8 +42,11 @@ AR <- function(ar_params = NA_real_,start_values=NA_real_,n=1,sd=1) {
     
     p <- length(ar_params)
     
+    if (p>n) {
+        stop("too many start values for requested length of the time series")
+    }
     # Initialisieren der Zeitreihe mit Nullen
-    time_series <- numeric(n + p)
+    time_series <- numeric(n)
     
     # White-Noise-Komponente generieren
     noise <- rnorm(n , 0, sd)
@@ -52,8 +55,10 @@ AR <- function(ar_params = NA_real_,start_values=NA_real_,n=1,sd=1) {
     time_series[1:p] <- start_values
     
     # Generieren der AR(p)-Zeitreihe
-    for (t in (p + 1):(n + p)) {
-        time_series[t] <- sum(ar_params * rev(time_series[(t-p):(t-1)])) + noise[t-p]
+    if (n>p) {
+        for (t in (p + 1):n) {
+            time_series[t] <- sum(ar_params * rev(time_series[(t-p):(t-1)])) + noise[t-p]
+        }
     }
     
     # Entfernen der zusätzlichen Initialisierungswerte
@@ -63,25 +68,24 @@ AR <- function(ar_params = NA_real_,start_values=NA_real_,n=1,sd=1) {
     new("AR",
         ar_params=ar_params,
         start_values=start_values,
-        n=n+p,
+        n=n,
         sd=sd,
         data= time_series)
 }
 
 MA <- function(ma_params = NA_real_,sd=1,n=1) {
-    
-    ma_params <- ma_params
+
     q <- length(ma_params)
     
     # Initialisieren der Zeitreihe mit Nullen
     time_series <- numeric(n)
     
     # White-Noise-Komponente generieren
-    noise <- rnorm(n+q , 0, sd)
+    noise <- rnorm(n+q, 0, sd)
     
     
     # Generieren der MA(q)-Zeitreihe
-    for (t in (q + 1):(n + q)) {
+    for (t in (q + 1):(n+q)) {
         time_series[t] <- sum(ma_params * rev(time_series[(t-q):(t-1)])) + noise[t]
     }
     
@@ -112,10 +116,7 @@ setValidity("TimeSeries", function(object){
     else if (0>object@sd){
         "Standard deviation is negative"
     }
-    
-    
-    else{
-        
+    else {
         TRUE
     }
     #TODO laenge check und sd check
@@ -141,7 +142,7 @@ setValidity("AR", function(object) {
         print(object@data)
         "there are NA values in the data"
     }
-        else {
+    else {
         TRUE
     }
 })
@@ -269,6 +270,16 @@ ACF <- function(ts_obj,h){
     return(summe[1][1])
 }
 
+vec_to_ts <- function(vec) {
+    stopifnot("NA values in the vector"=any(is.na(vec))==FALSE,
+              "length of the vector is 0"=length(vec)!=0)
+    len <- length(vec)
+    sd_vec <- sd(vec)
+    new("TimeSeries",
+        sd = sd_vec,
+        n = len,
+        data = vec)
+}
 
 plot(sapply(1:(ma_time_series@n-1),function(h){ACF(ma_time_series,h)}))
 
