@@ -35,8 +35,10 @@ innovations_algorithm <- function(ts_obj) {
 
 innovations_algorithm(ar_time_series)
 
-# First implementation of a predicter for the innovations algorithm
-innovations_predict <- function (ts_obj, steps = 1){
+# First implementation of a predictor for the innovations algorithm.
+# entire_ts TRUE returns both predictions and entered TS data, whereas FALSE will only return the predicted values.
+# Note: Value returned will always be a ts_obj
+innovations_predict <- function (ts_obj, steps = 1, entire_ts = TRUE){
     thetas <- innovations_algorithm(ts_obj)
     X_hat <- 0
     len <- ts_obj@n

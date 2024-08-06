@@ -21,7 +21,13 @@ dla <- function(ts_obj){
 }
 
 
+
 dla(ar_time_series)
+
+pr <- function(ts_obj, t = ACF(ts_obj, 0)){
+    print(t)
+}
+pr(ar_time_series)
 
 
 # First testing
@@ -34,4 +40,29 @@ plot(ar_time_series@data)
 ar_time_series@n
 ar_time_series@data
 
-#dl_predictor <- function(ts_obj, )
+
+dl_predictor <- function(ts_obj, pred_len=1, entire_ts = TRUE){
+    stopifnot("Prediction length should be greater or equal to 1" =  pred_len >= 1)
+    stopifnot("Entered preditcion length not compatible" = length(pred_len) == 1)
+    stopifnot("Prediction length is not an integer" = pred_len %% 1 == 0)
+    
+    stopifnot("entire_ts has to be logical" = is.logical(entire_ts))
+    stopifnot("Entered value for entire_ts is not compatible" = length(entire_ts) == 1)
+    
+    in_len <- ts_obj@n
+    for (j in 1:pred_len){
+        new_val <- sum(dla(ts_obj) * rev(ts_obj@data))
+        ts_obj@data <- c(ts_obj@data, new_val)
+        ts_obj@n <- ts_obj@n + 1
+    }
+    
+    if (entire_ts==TRUE){
+        return(ts_obj)
+    } else {
+        ts_obj@data <- ts_obj@data[(in_len + 1):(in_len + pred_len)]
+        ts_obj@n <- pred_len
+        return(ts_obj)  # Should we modify the other paramters as well? Convert to "Normal" TS?
+    }
+}
+
+dl_predictor(ar_time_series, pred_len = 5, entire_ts = FALSE)
