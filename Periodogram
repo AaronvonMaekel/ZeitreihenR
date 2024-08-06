@@ -21,6 +21,7 @@ periodogram_gen <- function(TS_obj){
     return(f)
 }
 
+#takes values on form w = j/n, 0 <= j <= n/2, where n is size of dataset
 
 plot_periodogram <- function(TS_obj){
     data <- TS_obj@data #i.e. the contained time series values
