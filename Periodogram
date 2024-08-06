@@ -6,7 +6,6 @@ periodogram_gen <- function(TS_obj){
         for (w in ws){
             print(w)
             if (abs(n * w - round(n * w)) > .Machine$double.eps^0.5 || w > 1/2 || w < 0){
-                cat(w)
                 stop("w must be on form w = j/n, 0 <= j <= n/2, where n is size of dataset")}
             cos_trans <- 0
             sin_trans <- 0
