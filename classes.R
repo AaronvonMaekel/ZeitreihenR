@@ -13,7 +13,6 @@ setClass(
     #contains="VIRTUAL",
     prototype = list(sd=1,n=0,data=NA_real_)
     
-    
 )
 
 setClass(
@@ -39,7 +38,7 @@ setClass(
 
 # Benutzerdefinierte Konstruktoren
 AR <- function(ar_params = NA_real_,start_values=NA_real_,n=1,sd=1) {
-    
+    # was passiert, wenn ar_params = NA? Den Fall ausschließen?
     p <- length(ar_params)
     
     if (p>n) {
@@ -54,7 +53,7 @@ AR <- function(ar_params = NA_real_,start_values=NA_real_,n=1,sd=1) {
     # Initialisieren der ersten p Werte
     time_series[1:p] <- start_values
     
-    # Generieren der AR(p)-Zeitreihe
+    # Generieren weiterer Werte der AR(p)-Zeitreihe (falls n>p)
     if (n>p) {
         for (t in (p + 1):n) {
             time_series[t] <- sum(ar_params * rev(time_series[(t-p):(t-1)])) + noise[t-p]
@@ -74,19 +73,32 @@ AR <- function(ar_params = NA_real_,start_values=NA_real_,n=1,sd=1) {
 }
 
 MA <- function(ma_params = NA_real_,sd=1,n=1) {
-
+    # was passiert, wenn ma_params = NA? Den Fall ausschließen?
     q <- length(ma_params)
     
     # Initialisieren der Zeitreihe mit Nullen
     time_series <- numeric(n)
     
     # White-Noise-Komponente generieren
-    noise <- rnorm(n+q, 0, sd)
+    noise <- rnorm(n, 0, sd)
     
+    # Berechne ersten q Werte der Zeitreihe
+    # muss gecheckt werden, dass n auch wirklich größer ist als das aktuelle t in jeder Iteration
+    for (t in 1:q) {
+        if (t<=n) {
+            if (t==1) {
+                time_series[1] <- noise[1]
+            } else {
+                time_series[t] <- sum(ma_params*rev(time_series[1:(t-1)])) + noise[t]
+            }
+        }
+    }
     
-    # Generieren der MA(q)-Zeitreihe
-    for (t in (q + 1):(n+q)) {
-        time_series[t] <- sum(ma_params * rev(time_series[(t-q):(t-1)])) + noise[t]
+    # Generiere weitere Werte der MA(q)-Zeitreihe (falls n>q)
+    if (n>q) {
+        for (t in (q + 1):n) {
+            time_series[t] <- sum(ma_params * rev(time_series[(t-q):(t-1)])) + noise[t]
+        }
     }
     
     new("MA",
@@ -181,10 +193,11 @@ setMethod(
     function(object) {
         
         ar_params <- object@ar_params
+        n <- object@n # wird gebraucht? Bzw was ist n sonst?
         p <- length(ar_params)
         
         # Initialisieren der Zeitreihe mit Nullen
-        time_series <- numeric(n + p)
+        time_series <- numeric(n)
         
         # White-Noise-Komponente generieren
         noise <- rnorm(n , 0, object@sd)
@@ -192,14 +205,19 @@ setMethod(
         # Initialisieren der ersten p Werte
         time_series[1:p] <- object@start_values
         
-        # Generieren der AR(p)-Zeitreihe
-        for (t in (p + 1):(n + p)) {
-            time_series[t] <- sum(ar_params * rev(time_series[(t-p):(t-1)])) + noise[t]
+        # Generieren weiterer Werte der AR(p)-Zeitreihe (falls n>p)
+        if (n>p) {
+            for (t in (p + 1):n) {
+                time_series[t] <- sum(ar_params * rev(time_series[(t-p):(t-1)])) + noise[t-p]
+            }
         }
         
+        # das Folgende kann jetzt weg?
         # Entfernen der zusätzlichen Initialisierungswerte
-        time_series <- time_series[(p + 1):(n + p)]
-        object@data = time_series
+        # time_series <- time_series[(p + 1):(n + p)]
+        
+        # Speichern der neuen Daten
+        object@data <-  time_series
         
     }
 )
@@ -212,21 +230,35 @@ setMethod(
     function(object) {
         
         ma_params <- object@ma_params
+        n <- object@n # brauchen wir? Bzw was ist n sonst?
         q <- length(ma_params)
         
         # Initialisieren der Zeitreihe mit Nullen
         time_series <- numeric(n)
         
         # White-Noise-Komponente generieren
-        noise <- rnorm(n+q , 0, object@sd)
+        noise <- rnorm(n, 0, object@sd)
         
-        
-        # Generieren der MA(q)-Zeitreihe
-        for (t in (q + 1):(n + q)) {
-            time_series[t] <- sum(ma_params * rev(time_series[(t-q):(t-1)])) + noise[t]
+        # Berechne ersten q Werte der Zeitreihe
+        # muss gecheckt werden, dass n auch wirklich größer ist als das aktuelle t in jeder Iteration
+        for (t in 1:q) {
+            if (t<=n) {
+                if (t==1) {
+                    time_series[1] <- noise[1]
+                } else {
+                    time_series[t] <- sum(ma_params*rev(time_series[1:(t-1)])) + noise[t]
+                }
+            }
         }
         
-        return(time_series)
+        # Generiere weitere Werte der MA(q)-Zeitreihe (falls n>q)
+        if (n>q) {
+            for (t in (q + 1):n) {
+                time_series[t] <- sum(ma_params * rev(time_series[(t-q):(t-1)])) + noise[t]
+            }
+        }
+        
+        object@data <-  time_series
     }
 )
 
