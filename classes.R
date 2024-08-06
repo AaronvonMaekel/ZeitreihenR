@@ -112,10 +112,7 @@ setValidity("TimeSeries", function(object){
     else if (0>object@sd){
         "Standard deviation is negative"
     }
-    
-    
-    else{
-        
+    else {
         TRUE
     }
     #TODO laenge check und sd check
@@ -141,7 +138,7 @@ setValidity("AR", function(object) {
         print(object@data)
         "there are NA values in the data"
     }
-        else {
+    else {
         TRUE
     }
 })
@@ -269,6 +266,16 @@ ACF <- function(ts_obj,h){
     return(summe[1][1])
 }
 
+vec_to_ts <- function(vec) {
+    stopifnot("NA values in the vector"=any(is.na(vec))==FALSE,
+              "length of the vector is 0"=length(vec)!=0)
+    len <- length(vec)
+    sd_vec <- sd(vec)
+    new("TimeSeries",
+        sd = sd_vec,
+        n = len,
+        data = vec)
+}
 
 plot(sapply(1:(ma_time_series@n-1),function(h){ACF(ma_time_series,h)}))
 
