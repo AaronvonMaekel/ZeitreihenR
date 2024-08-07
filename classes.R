@@ -38,7 +38,6 @@ setClass(
 
 # Benutzerdefinierte Konstruktoren
 AR <- function(ar_params = NA_real_,start_values=NA_real_,n=1,sd=1) {
-    # was passiert, wenn ar_params = NA? Den Fall ausschließen?
     p <- length(ar_params)
     
     if (p>n) {
@@ -48,7 +47,7 @@ AR <- function(ar_params = NA_real_,start_values=NA_real_,n=1,sd=1) {
     time_series <- numeric(n)
     
     # White-Noise-Komponente generieren
-    noise <- rnorm(n , 0, sd)
+    noise <- rnorm(n-p , 0, sd)
     
     # Initialisieren der ersten p Werte
     time_series[1:p] <- start_values
@@ -73,7 +72,6 @@ AR <- function(ar_params = NA_real_,start_values=NA_real_,n=1,sd=1) {
 }
 
 MA <- function(ma_params = NA_real_,sd=1,n=1) {
-    # was passiert, wenn ma_params = NA? Den Fall ausschließen?
     q <- length(ma_params)
     
     # Initialisieren der Zeitreihe mit Nullen
@@ -191,36 +189,13 @@ setMethod(
     "resample",
     "AR",
     function(object) {
-        
-        ar_params <- object@ar_params
-        n <- object@n # wird gebraucht? Bzw was ist n sonst?
-        p <- length(ar_params)
-        
-        # Initialisieren der Zeitreihe mit Nullen
-        time_series <- numeric(n)
-        
-        # White-Noise-Komponente generieren
-        noise <- rnorm(n , 0, object@sd)
-        
-        # Initialisieren der ersten p Werte
-        time_series[1:p] <- object@start_values
-        
-        # Generieren weiterer Werte der AR(p)-Zeitreihe (falls n>p)
-        if (n>p) {
-            for (t in (p + 1):n) {
-                time_series[t] <- sum(ar_params * rev(time_series[(t-p):(t-1)])) + noise[t-p]
-            }
-        }
-        
-        # das Folgende kann jetzt weg?
-        # Entfernen der zusätzlichen Initialisierungswerte
-        # time_series <- time_series[(p + 1):(n + p)]
-        
-        # Speichern der neuen Daten
-        object@data <-  time_series
-        
+        AR(ar_params = object@ar_params, 
+           start_values = object@start_values, 
+           n = object@n, 
+           sd = object@sd)
     }
 )
+
 
 
 # Methode zur Generierung von MA(q) Daten
@@ -228,37 +203,9 @@ setMethod(
     "resample",
     "MA",
     function(object) {
-        
-        ma_params <- object@ma_params
-        n <- object@n # brauchen wir? Bzw was ist n sonst?
-        q <- length(ma_params)
-        
-        # Initialisieren der Zeitreihe mit Nullen
-        time_series <- numeric(n)
-        
-        # White-Noise-Komponente generieren
-        noise <- rnorm(n, 0, object@sd)
-        
-        # Berechne ersten q Werte der Zeitreihe
-        # muss gecheckt werden, dass n auch wirklich größer ist als das aktuelle t in jeder Iteration
-        for (t in 1:q) {
-            if (t<=n) {
-                if (t==1) {
-                    time_series[1] <- noise[1]
-                } else {
-                    time_series[t] <- sum(ma_params*rev(time_series[1:(t-1)])) + noise[t]
-                }
-            }
-        }
-        
-        # Generiere weitere Werte der MA(q)-Zeitreihe (falls n>q)
-        if (n>q) {
-            for (t in (q + 1):n) {
-                time_series[t] <- sum(ma_params * rev(time_series[(t-q):(t-1)])) + noise[t]
-            }
-        }
-        
-        object@data <-  time_series
+        MA(ma_params = object@ma_params,
+           n = object@n,
+           sd = object@sd)
     }
 )
 
@@ -275,6 +222,7 @@ start_values = c(1,1)
 # Erstellen eines Objekts der ARTimeSeries-Klasse
 ar_time_series <- AR(start_values = start_values, ar_params = ar_params, sd = sd,n=10)
 
+
 # Plotten der AR(p)-Zeitreihe
 plot(ar_time_series@data)
 
@@ -283,6 +231,7 @@ plot(ar_time_series@data)
 ma_params <- c(0.6, 0.6)  # MA(2)-Modell
 # Erstellen eines Objekts der MATimeSeries-Klasse
 ma_time_series <- MA(ma_params = ma_params, sd = sd,n=n)
+
 
 # Plotten der MA(q)-Zeitreihe
 plot(ma_time_series@data)
