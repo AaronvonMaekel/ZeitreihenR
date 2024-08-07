@@ -106,6 +106,7 @@ MA <- function(ma_params = NA_real_,sd=1,n=1) {
         n=n)
 }
 
+
 #Validierungen
 setValidity("TimeSeries", function(object){
     if (!is.atomic(object@n)){
@@ -197,7 +198,6 @@ setMethod(
 )
 
 
-
 # Methode zur Generierung von MA(q) Daten
 setMethod(
     "resample",
@@ -210,17 +210,15 @@ setMethod(
 )
 
 
-
-
-set.seed(123)
-n <- 10
+set.seed(187)
+m <- 175
 sd <- 1
 # Beispielnutzung AR
-ar_params <- c(0.6, 0.6)  # AR(2)-Modell
+ar_params <- c(0.3, 0.7)  # AR(2)-Modell
 
 start_values = c(1,1)
 # Erstellen eines Objekts der ARTimeSeries-Klasse
-ar_time_series <- AR(start_values = start_values, ar_params = ar_params, sd = sd,n=10)
+ar_time_series <- AR(start_values = start_values, ar_params = ar_params, sd = sd,n=m)
 
 
 # Plotten der AR(p)-Zeitreihe
@@ -228,9 +226,9 @@ plot(ar_time_series@data)
 
 
 # Beispielnutzung MA
-ma_params <- c(0.6, 0.6)  # MA(2)-Modell
+ma_params <- c(0.3, 0.7)  # MA(2)-Modell
 # Erstellen eines Objekts der MATimeSeries-Klasse
-ma_time_series <- MA(ma_params = ma_params, sd = sd,n=n)
+ma_time_series <- MA(ma_params = ma_params, sd = sd,n=m)
 
 
 # Plotten der MA(q)-Zeitreihe

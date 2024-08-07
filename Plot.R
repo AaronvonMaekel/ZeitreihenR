@@ -11,9 +11,10 @@ plot_timeseries <- function(ts_obj, prd = NULL, title = "Zeitreihe mit Vorhersag
     timeseries <- ts_obj@data
     
     # Eingabeüberprüfung
-    stopifnot("Übergabegabevektor nicht numerisch." = is.numeric(timeseries))
-    stopifnot("Übergabevektor nicht lang genug." = length(timeseries) > 0)
-    stopifnot("Übergabevektor nicht numerisch oder NULL." = (is.numeric(prd) | is.null(prd)))
+    # stopifnot("Übergabegabevektor nicht numerisch." = is.numeric(timeseries))
+    # stopifnot("Übergabevektor nicht lang genug." = length(timeseries) > 0)
+    # stopifnot("Übergabevektor nicht numerisch oder NULL." = (is.numeric(prd) | is.null(prd)))
+    # Das auskommentierte sollte nicht notwendig sein, da wir das schon bei ValidObject abprüfen
     
     if (is.null(prd)) {
         # Plots erstellen
