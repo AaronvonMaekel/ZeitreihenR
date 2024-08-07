@@ -87,7 +87,7 @@ MA <- function(ma_params = NA_real_,sd=1,n=1) {
             if (t==1) {
                 time_series[1] <- noise[1]
             } else {
-                time_series[t] <- sum(ma_params*rev(time_series[1:(t-1)])) + noise[t]
+                time_series[t] <- sum(ma_params*rev(noise[1:(t-1)])) + noise[t]
             }
         }
     }
@@ -95,7 +95,7 @@ MA <- function(ma_params = NA_real_,sd=1,n=1) {
     # Generiere weitere Werte der MA(q)-Zeitreihe (falls n>q)
     if (n>q) {
         for (t in (q + 1):n) {
-            time_series[t] <- sum(ma_params * rev(time_series[(t-q):(t-1)])) + noise[t]
+            time_series[t] <- sum(ma_params * rev(noise[(t-q):(t-1)])) + noise[t]
         }
     }
     
