@@ -261,12 +261,11 @@ vec_to_ts <- function(vec) {
 }
 
 plot(sapply(1:(ma_time_series@n-1),function(h){ACF(ma_time_series,h)}))
-
 #####Periodogram
 
-periodogram_gen <- function(ts_obj){
+periodogram_gen <- function(TS_obj){
     data <- TS_obj@data #i.e. the contained time series values
-    n <-  length(data) 
+    n <-  TS_obj@n
     f <- function(ws){
         returnvalue <- numeric(0)
         for (w in ws){
@@ -288,10 +287,9 @@ periodogram_gen <- function(ts_obj){
 }
 
 
-plot_periodogram <- function(ts_obj){
-    data <- TS_obj@data #i.e. the contained time series values
-    n <- length(data)
-    p <- periodogram_gen(data)
+plot_periodogram <- function(TS_obj){
+    n <- TS_obj@n
+    p <- periodogram_gen(TS_obj)
     xs <- (0:floor(n/2))/n
     ys <- p(xs) 
     plot(xs, ys, type = "h", xlab = "Frequency", ylab = "Periodogram")
