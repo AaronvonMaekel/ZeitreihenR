@@ -78,25 +78,11 @@ MA <- function(ma_params = NA_real_,sd=1,n=1) {
     time_series <- numeric(n)
     
     # White-Noise-Komponente generieren
-    noise <- rnorm(n, 0, sd)
+    noise <- rnorm(n+q, 0, sd)
     
-    # Berechne ersten q Werte der Zeitreihe
-    # muss gecheckt werden, dass n auch wirklich größer ist als das aktuelle t in jeder Iteration
-    for (t in 1:q) {
-        if (t<=n) {
-            if (t==1) {
-                time_series[1] <- noise[1]
-            } else {
-                time_series[t] <- sum(ma_params*rev(noise[1:(t-1)])) + noise[t]
-            }
-        }
-    }
-    
-    # Generiere weitere Werte der MA(q)-Zeitreihe (falls n>q)
-    if (n>q) {
-        for (t in (q + 1):n) {
-            time_series[t] <- sum(ma_params * rev(noise[(t-q):(t-1)])) + noise[t]
-        }
+    # Berechne die Werte der Zeitreihe
+    for (t in 1:n) {
+        time_series[t] <- sum(ma_params * rev(noise[t:(t+q-1)])) + noise[t+q]
     }
     
     new("MA",
