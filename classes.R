@@ -197,7 +197,7 @@ setMethod(
 
 
 set.seed(187)
-m <- 175
+m <- 17
 sd <- 1
 # Beispielnutzung AR
 ar_params <- c(0.3, 0.7)  # AR(2)-Modell
@@ -235,9 +235,10 @@ ACF <- function(ts_obj,h){
     return(summe[1][1])
 }
 
+# We need more checks here! For instance, we should check whether we have numeric values!
 vec_to_ts <- function(vec) {
-    stopifnot("NA values in the vector"=any(is.na(vec))==FALSE,
-              "length of the vector is 0"=length(vec)!=0)
+    stopifnot("NA values in the vector"=any(is.na(vec))==FALSE)
+    stopifnot("length of the vector is 0"=length(vec)!=0)
     len <- length(vec)
     sd_vec <- sd(vec)
     new("TimeSeries",

@@ -24,11 +24,6 @@ dla <- function(ts_obj){
 
 dla(ar_time_series)
 
-pr <- function(ts_obj, t = ACF(ts_obj, 0)){
-    print(t)
-}
-pr(ar_time_series)
-
 
 # First testing
 ss <- dla(ar_time_series)
@@ -55,14 +50,15 @@ dl_predictor <- function(ts_obj, pred_len=1, entire_ts = TRUE){
         ts_obj@data <- c(ts_obj@data, new_val)
         ts_obj@n <- ts_obj@n + 1
     }
-    
+    vec <- ts_obj@data
+
     if (entire_ts==TRUE){
-        return(ts_obj)
+        return(vec_to_ts(vec))
     } else {
-        ts_obj@data <- ts_obj@data[(in_len + 1):(in_len + pred_len)]
-        ts_obj@n <- pred_len
-        return(ts_obj)  # Should we modify the other paramters as well? Convert to "Normal" TS?
+        vec <- vec[(in_len + 1):(in_len + pred_len)]
+        return(vec_to_ts(vec)) 
     }
 }
 
+# Testing
 dl_predictor(ar_time_series, pred_len = 5, entire_ts = FALSE)
