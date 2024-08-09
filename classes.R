@@ -247,36 +247,49 @@ vec_to_ts <- function(vec) {
 }
 
 plot(sapply(1:(ma_time_series@n-1),function(h){ACF(ma_time_series,h)}))
+
+    
 #####Periodogram
 
-periodogram_gen <- function(TS_obj){
-    data <- TS_obj@data #i.e. the contained time series values
-    n <-  TS_obj@n
-    f <- function(ws){
-        returnvalue <- numeric(0)
-        for (w in ws){
-            print(w)
-            if (abs(n * w - round(n * w)) > .Machine$double.eps^0.5 || w > 1/2 || w < 0){
-                stop("w must be on form w = j/n, 0 <= j <= n/2, where n is size of dataset")}
-            cos_trans <- 0
-            sin_trans <- 0
-            for (t in 1:n){
-                cos_trans <- cos_trans + data[t]*cos(2*pi*w*t)
-                sin_trans <-sin_trans + data[t]*sin(2*pi*w*t) 
-            }
-            returnvalue <-  c(returnvalue,((1/n)*(cos_trans^2 + sin_trans^2)))
-        }
-        return(returnvalue)
-    }
-    
-    return(f)
-}
+setGeneric("periodogram", 
+           function(object) standardGeneric("periodogram"))
+
+setMethod("periodogram",
+          "TimeSeries",
+          function(object){
+              data <- object@data
+              n <-  object@n
+              f <- function(ws){
+                  returnvalue <- numeric(0)
+                  for (w in ws){
+                      if (abs(n * w - round(n * w)) > .Machine$double.eps^0.5 || w > 1/2 || w < 0){
+                          stop("w must be on form w = j/n, 0 <= j <= n/2, where n is size of dataset")}
+                      cos_trans <- 0
+                      sin_trans <- 0
+                      for (t in 1:n){
+                          cos_trans <- cos_trans + data[t]*cos(2*pi*w*t)
+                          sin_trans <-sin_trans + data[t]*sin(2*pi*w*t) 
+                      }
+                      returnvalue <-  c(returnvalue,((1/n)*(cos_trans^2 + sin_trans^2)))
+                  }
+                  return(returnvalue)
+              }
+              
+              return(f)
+          })
 
 
-plot_periodogram <- function(TS_obj){
-    n <- TS_obj@n
-    p <- periodogram_gen(TS_obj)
-    xs <- (0:floor(n/2))/n
-    ys <- p(xs) 
-    plot(xs, ys, type = "h", xlab = "Frequency", ylab = "Periodogram")
-}
+
+setMethod("plot_periodogram",
+          "TimeSeries",
+          function(object){
+              n <- object@n
+              p <- periodogram(object)
+              xs <- (0:floor(n/2))/n
+              ys <- p(xs) 
+              plot(xs, ys, type = "h", xlab = "Frequency", ylab = "Periodogram")
+          })
+
+#Example/test
+AR2 <- AR(c(0.9,-0.3),c(0,0),n=100, sd = 1)
+plot_periodogram(AR1)
