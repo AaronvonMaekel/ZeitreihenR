@@ -33,28 +33,41 @@ innovations_algorithm <- function(ts_obj) {
     return(theta)
 }
 
-innovations_algorithm_2 <- function(ts_obj, thetas_prev=matrix(nrow=0, ncol=0), out_len=nrow(thetas_prev)+1) {
+innovations_algorithm_2 <- function(ts_obj, thetas_prev= matrix(ACF(ts_obj, 1)/ACF(ts_obj, 0)), out_len=nrow(thetas_prev)+1) {
     len <- ts_obj@n
     cov <- ACF(ts_obj,0)
     v <- cov
     
     # check matrix
     stopifnot("The matrix has to be a square matrix"=nrow(thetas_prev)==ncol(thetas_prev))
-    for (i in 1:(nrow(thetas_prev)-1)) {
-        for (j in (i+1):ncol(thetas_prev)) {
-            if(thetas_prev[i,j]!=0) {
-                stop("The matrix has to be a lower triangular matrix")
+    
+    # Checking for lower triangular matrix
+    if (nrow(thetas_prev) > 1){
+        for (i in 1:(nrow(thetas_prev)-1)) {
+            for (j in (i+1):ncol(thetas_prev)) {
+                if(thetas_prev[i,j]!=0) {
+                    stop("The matrix has to be a lower triangular matrix")
+                }
             }
         }
     }
+    
     
     # check out len groesser als die matrix
     stopifnot("out_len has to be greater than the number of rows in the matrix"=out_len>nrow(thetas_prev))
     
     # We should also check for "unallowed" values in the matrix, such as NA or letters!!!
     
-    for (n in 1:nrow(thetas_prev)) {
-        v <- c(v, cov - sum(rev(thetas_prev[n,])^2 * v))
+    
+    # Compute v's
+    if (nrow(thetas_prev)!=0){
+        for (n in 1:nrow(thetas_prev)) {
+            calc_sum <- 0
+            for (j in 1:n){
+                calc_sum <- v[j] * thetas_prev[n, n - j + 1]^2
+            }
+            v <- c(v, cov - calc_sum)
+        }
     }
     
     theta <- matrix(0,out_len,out_len)
@@ -68,7 +81,7 @@ innovations_algorithm_2 <- function(ts_obj, thetas_prev=matrix(nrow=0, ncol=0), 
         } else {
             for (k in 0:(n-1)) {
                 if (k == 0){
-                    theta[n, n] <- acf_compl[n] / v[1]
+                    theta[n, n] <- acf_compl[n] / v[1]   # Hier liegt das Problem: Wahrscheinlich ist hier acf_compl out of bounds!!!
                 } else {
                     sum_thetas <- 0
                     for (j in 0:(k-1)) {
@@ -88,24 +101,53 @@ innovations_algorithm_2 <- function(ts_obj, thetas_prev=matrix(nrow=0, ncol=0), 
     return(theta)
 }
 
-innovations_algorithm(ar_time_series)
+innovations_algorithm_2(ar_time_series, out_len = ar_time_series@n + 1)
 
 # First implementation of a predictor for the innovations algorithm.
 # entire_ts TRUE returns both predictions and entered TS data, whereas FALSE will only return the predicted values.
 # Note: Value returned will always be a ts_obj
+
 innovations_predict <- function (ts_obj, steps = 1, entire_ts = TRUE){
-    thetas <- innovations_algorithm_2(ts_obj, out_len = ts_obj@n)
+    
+    # ToDo: Check whether entire_ts is logical and steps has a reasonable value
+    
+    validObject(ts_obj) # Checking that ts_obj is indeed a timeseries
+    thetas <- innovations_algorithm_2(ts_obj, out_len = ts_obj@n - 1)
     X_hat <- 0
     len <- ts_obj@n
-    for (n in 1:len){
+    
+    # Compute X_hats
+    for (n in 1:(len-1)){
         X <- ts_obj@data[1:n]
         theta_calc <- thetas[n, ][1:n]
         new_X <- sum(theta_calc * rev(X - X_hat))
         X_hat <- c(X_hat, new_X)
+    } # Note: We have now obtained X_hat_1 to X_hat_n
+    
+    
+    # Compute predictions
+    predicts <- c()
+    for (h in 1:steps){
+        thetas <- innovations_algorithm_2(ts_obj, thetas_prev = thetas, out_len = ts_obj@n - 1 + h)
+        print(thetas)
+        theta_calc <- thetas[len - 1 + h ,]
+        pre <- 0
+        for (j in h:(len - 1 + h)){
+            pre <-  pre + theta_calc[j] * (ts_obj@data[len+h-j] - X_hat[len+h-j])
+        }
+        predicts <- c(predicts, pre)
     }
-    return(X_hat[len+1])
+    print(predicts)
+    
+    # Produce output according to entire_ts
+    if(entire_ts){
+        vec <- c(ts_obj@data, predicts)
+        return(vec_to_ts(vec))
+    } else {
+        return(vec_to_ts(predicts))
+    }
 }
 
 
-innovations_predict(ar_time_series)
+innovations_predict(ar_time_series, steps=2, entire_ts = FALSE)
 plot(ar_time_series@data)
