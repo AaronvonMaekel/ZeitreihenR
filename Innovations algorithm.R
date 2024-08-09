@@ -51,13 +51,14 @@ innovations_algorithm_2 <- function(ts_obj, thetas_prev=matrix(nrow=0, ncol=0), 
     # check out len groesser als die matrix
     stopifnot("out_len has to be greater than the number of rows in the matrix"=out_len>nrow(thetas_prev))
     
+    # We should also check for "unallowed" values in the matrix, such as NA or letters!!!
+    
     for (n in 1:nrow(thetas_prev)) {
-        v <- c(v, cov- sum(rev(thetas_prev[n,])^2 * v))
+        v <- c(v, cov - sum(rev(thetas_prev[n,])^2 * v))
     }
     
     theta <- matrix(0,out_len,out_len)
     theta[1:nrow(thetas_prev), 1:ncol(thetas_prev)] <- thetas_prev
-    nrow(thetas_prev)+1
     
     acf_compl <- c(sapply(1:(len-1), \(x) {ACF(ts_obj, x)}), 0)
     for(n in (nrow(thetas_prev)+1):out_len) {
@@ -93,7 +94,7 @@ innovations_algorithm(ar_time_series)
 # entire_ts TRUE returns both predictions and entered TS data, whereas FALSE will only return the predicted values.
 # Note: Value returned will always be a ts_obj
 innovations_predict <- function (ts_obj, steps = 1, entire_ts = TRUE){
-    thetas <- innovations_algorithm(ts_obj)
+    thetas <- innovations_algorithm_2(ts_obj, out_len = ts_obj@n)
     X_hat <- 0
     len <- ts_obj@n
     for (n in 1:len){
