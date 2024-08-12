@@ -1,8 +1,8 @@
 
-# Laden der erforderlichen Bibliothek
+# Import library
 library(methods)
 
-#S4-Klassendefinitionen
+#Definition of S4-Classes
 setClass(
     "TimeSeries",
     slots = list(
@@ -36,30 +36,30 @@ setClass(
     
 )
 
-# Benutzerdefinierte Konstruktoren
+# Constructors of AR and MA time-series
 AR <- function(ar_params = numeric(0),start_values=numeric(0),n=1,sd=1) {
     p <- length(ar_params)
     
     if (p>n) {
         stop("too many start values for requested length of the time series")
     }
-    # Initialisieren der Zeitreihe mit Nullen
+    # Initialize time series
     time_series <- numeric(n)
     
-    # White-Noise-Komponente generieren
+    # Generate white noise components
     noise <- rnorm(n-p , 0, sd)
     
-    # Initialisieren der ersten p Werte
+    # Initialize values
     time_series[1:p] <- start_values
     
-    # Generieren weiterer Werte der AR(p)-Zeitreihe (falls n>p)
+    # Generate more AR(p) values if n > p
     if (n>p) {
         for (t in (p + 1):n) {
             time_series[t] <- sum(ar_params * rev(time_series[(t-p):(t-1)])) + noise[t-p]
         }
     }
     
-    # Entfernen der zusätzlichen Initialisierungswerte
+    # Remove other initialization values
     #time_series <- time_series[(p + 1):(n + p)]
     
     
@@ -74,13 +74,13 @@ AR <- function(ar_params = numeric(0),start_values=numeric(0),n=1,sd=1) {
 MA <- function(ma_params = NA_real_,sd=1,n=1) {
     q <- length(ma_params)
     
-    # Initialisieren der Zeitreihe mit Nullen
+    # Initialize time series
     time_series <- numeric(n)
     
-    # White-Noise-Komponente generieren
+    # Generate white noise components
     noise <- rnorm(n+q, 0, sd)
     
-    # Berechne die Werte der Zeitreihe
+    # Compute values
     for (t in 1:n) {
         time_series[t] <- sum(ma_params * rev(noise[t:(t+q-1)])) + noise[t+q]
     }
@@ -93,7 +93,7 @@ MA <- function(ma_params = NA_real_,sd=1,n=1) {
 }
 
 
-#Validierungen
+# Validity checks
 setValidity("TimeSeries", function(object){
     errors <- character(0)
     
@@ -245,7 +245,7 @@ setMethod(
 )
 
 
-# Methode zur Generierung von MA(q) Daten
+# Generate MA(q) data
 setMethod(
     "resample",
     "MA",
