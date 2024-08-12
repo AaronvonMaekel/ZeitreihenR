@@ -38,10 +38,9 @@ setClass(
 # Benutzerdefinierte Konstruktoren
 AR <- function(ar_params = numeric(0),start_values=numeric(0),n=1,sd=1) {
     p <- length(ar_params)
-    
-    if (p>n) {
-        stop("too many start values for requested length of the time series")
-    }
+
+    stopifnot("too many start values for requested length of the time series"=p<=n)
+
     # Initialisieren der Zeitreihe mit Nullen
     time_series <- numeric(n)
     
@@ -168,7 +167,7 @@ setValidity("AR", function(object) {
     } 
     
     #Checking AR-Parameters
-    if(length(object@ar_params)){
+    if(length(object@ar_params)!=0){
         if(any(is.na(object@ar_params))){
             errors <- c(errors,"there are missing AR parameters")
         }
@@ -206,7 +205,7 @@ setValidity("MA", function(object) {
     
     
     #Checking MA-Parameters
-    if(length(object@ma_params)){
+    if(length(object@ma_params)!=0){
         if(any(is.na(object@ma_params))){
             errors <- c(errors,"there are missing MA parameters")
         }
@@ -257,14 +256,17 @@ setMethod(
 
 
 # We do not need checks here, because the validity functions will be called after the constructor
-vec_to_ts <- function(vec) {
+setGeneric("vec_to_ts", 
+           function(object) standardGeneric("vec_to_ts"))
+setMethod("vec_to_ts",
+          "numeric", function(vec) {
     len <- length(vec)
     sd_vec <- sd(vec) #empirical standard deviation
     new("TimeSeries",
         sd = sd_vec,
         n = len,
         data = vec)
-}
+})
 
 set.seed(187)
 m <- 17
