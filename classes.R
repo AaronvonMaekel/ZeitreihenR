@@ -11,7 +11,7 @@ setClass(
         data = "numeric"
     ),
     #contains="VIRTUAL",
-    prototype = list(sd=1,n=0,data=NA_real_)
+    prototype = list(sd=1,n=0,data=numeric(0))
     
 )
 
@@ -22,7 +22,7 @@ setClass(
         start_values= "numeric"
     ),
     contains="TimeSeries",
-    prototype = list(ar_params = NA_real_,start_values=NA_real_)
+    prototype = list(ar_params = numeric(0),start_values=numeric(0))
     
 )
 
@@ -32,12 +32,12 @@ setClass(
         ma_params = "numeric"
     ),
     contains="TimeSeries",
-    prototype = list(ma_params = NA_real_)
+    prototype = list(ma_params = numeric(0))
     
 )
 
 # Benutzerdefinierte Konstruktoren
-AR <- function(ar_params = NA_real_,start_values=NA_real_,n=1,sd=1) {
+AR <- function(ar_params = numeric(0),start_values=numeric(0),n=1,sd=1) {
     p <- length(ar_params)
     
     if (p>n) {
@@ -95,73 +95,134 @@ MA <- function(ma_params = NA_real_,sd=1,n=1) {
 
 #Validierungen
 setValidity("TimeSeries", function(object){
-    if (!is.atomic(object@n)){
-        "length is not atomic"
+    errors <- character(0)
+    
+    #checking n
+    if(is.na(object@n)|| length(object@n)== 0){
+        errors <- c(errors,"length is not available")
     }
-    else if (!is.numeric(object@n)){
-        "length is not a numeric value"
+    else{
+        if (!is.atomic(object@n)){
+        errors <- c(errors,"length is not atomic")
+        }
+        else if (!is.numeric(object@n)){
+            errors <- c(errors,"length is not a numeric value")
+        }
+        else{
+            if (0>object@n){
+                errors <- c(errors,"length is not a positive number")
+            }
+            if (!object@n %% 1 == 0){
+                errors <- c(errors,"length is not a integer")
+            }
+        }
     }
-    else if (0>object@n){
-        "length is a negative number"
+    #checking standard deviation
+    if(!is.na(object@sd) && length(object@sd)!= 0){
+    
+        if(!is.atomic(object@sd)){
+            errors <- c(errors,'standard deviation is not atomic')
+        }
+        else if (!is.numeric(object@sd)){
+            errors <- c(errors,"standard deviation is not a number")
+        }
+        
+        else if (0>object@sd){
+            errors <- c(errors,"standard deviation is negative")
+        }
+       
     }
-    else if (!object@n %% 1 == 0){
-        "length is not a integer"
+    
+    #checking data
+    if( length(object@data)== 0){
+        errors <- c(errors,"data is not available")
     }
-    else if(is.na(object@n)){
-        "length is not available"
+    else if (!is.numeric(object@data)){
+        errors <- c(errors,"data is not a numeric vector")
     }
-    else if (0>object@sd){
-        "Standard deviation is negative"
+    else{
+        if(any(is.na(object@data))){
+            errors <- c(errors,"data has missing values")
+        }
+        if(object@n!=length(object@data)){
+            errors <- c(errors,"data length doesnt correspond to the saved data length")
+        }
     }
-    else {
-        TRUE
+    
+    
+    
+    
+    if (length(errors)==0){
+        return(TRUE)
     }
-    #TODO laenge check und sd check
+    else{
+        return(errors)
+    }
+  
 }) 
 
 setValidity("AR", function(object) {
+    errors <- character(0)
+    
     if (length(object@ar_params) != length(object@start_values)) {
-        "The number of starting values does not coincide with the amount of coefficients"
+        errors <- c(errors,"The number of starting values does not coincide with the amount of coefficients")
     } 
-    else if(any(is.na(object@start_values))){
-        "there are NA start values"
+    
+    #Checking AR-Parameters
+    if(length(object@ar_params)){
+        if(any(is.na(object@ar_params))){
+            errors <- c(errors,"there are missing AR parameters")
+        }
+        if(!is.numeric(object@ar_params)){
+            errors <- c(errors,"the AR parameters are not numeric")
+        }
+        
     }
-    else if(any(is.na(object@ar_params))){
-        "there are NA AR-Parameters"
+    
+    #Checking start values
+    if(length(object@start_values)!=0){
+        if(!is.numeric(object@start_values)){
+            errors <- c(errors,"the start values are not numeric")
+        }
+        else{
+            if( any(is.na(object@start_values))){
+                errors <- c(errors,"there are missing start values")
+            }
+            if( any(object@data[1:length(object@start_values)]!=object@start_values)){
+                errors <- c(errors,"the start of the time series differs from the start values")
+            }
+        }
     }
-    #else if(length(object@data)!=object@n){
-    #    "length of data is not equal to noted length"
-    #}
-    else if(!is.numeric(object@data)){
-        "Data is not numeric"
+    
+    if (length(errors)==0){
+        return(TRUE)
     }
-    else if (any(is.na(object@data))){
-        print(object@data)
-        "there are NA values in the data"
-    }
-    else {
-        TRUE
+    else{
+        return(errors)
     }
 })
 
 setValidity("MA", function(object) {
-    if(any(is.na(object@ma_params))){
-        "there are NA MA-Parameters"
-    } else if(!is.numeric(object@ma_params)){
-        "MA-Parameters not numeric"
+    errors <- character(0)
+    
+    
+    #Checking MA-Parameters
+    if(length(object@ma_params)){
+        if(any(is.na(object@ma_params))){
+            errors <- c(errors,"there are missing MA parameters")
+        }
+        if(!is.numeric(object@ma_params)){
+            errors <- c(errors,"the MA parameters are not numeric")
+        }
+        
     }
-    #else if(length(object@data)!=object@n){
-    #    "length of data is not equal to noted length"
-    #}
-    else if(!is.numeric(object@data)){
-        "Data is not numeric"
+    
+    if (length(errors)==0){
+        return(TRUE)
     }
-    else if (any(is.na(object@data))){
-        "there are NA values in the data"
+    else{
+        return(errors)
     }
-    else {
-    TRUE
-      }
 })
 
 # Resampling
