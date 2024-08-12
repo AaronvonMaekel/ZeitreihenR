@@ -10,7 +10,6 @@ setClass(
         n = "numeric",
         data = "numeric"
     ),
-    #contains="VIRTUAL",
     prototype = list(sd=1,n=0,data=numeric(0))
     
 )
@@ -257,6 +256,16 @@ setMethod(
 )
 
 
+# We do not need checks here, because the validity functions will be called after the constructor
+vec_to_ts <- function(vec) {
+    len <- length(vec)
+    sd_vec <- sd(vec) #empirical standard deviation
+    new("TimeSeries",
+        sd = sd_vec,
+        n = len,
+        data = vec)
+}
+
 set.seed(187)
 m <- 17
 sd <- 1
@@ -281,38 +290,8 @@ ma_time_series <- MA(ma_params = ma_params, sd = sd,n=m)
 # Plotten der MA(q)-Zeitreihe
 plot(ma_time_series@data)
 
-#----------------------------
-# auto covariance function
-ACF <- function(ts_obj,h){
-    validObject(ts_obj)
-    ts <- ts_obj@data
-    n <- ts_obj@n
-    stopifnot("Index is not atomic"=is.atomic(h)) 
-    stopifnot("Index is not of type numeric"=is.numeric(h))
-    stopifnot("Index is not a integer"=(h %% 1 == 0))
-    stopifnot("index out of bounds"=abs(h)<ts_obj@n)
-    
-    smpl_mean <- mean(ts)
-    
-    summe <-  (1/n) * (ts[(1+abs(h)):n]-smpl_mean) %*% (ts[1:(n-abs(h))]-smpl_mean)
-    return(summe[1][1])
-}
-
-# We do not need checks here, because the validity functions will be called after the constructor
-vec_to_ts <- function(vec) {
-    len <- length(vec)
-    sd_vec <- sd(vec)
-    new("TimeSeries",
-        sd = sd_vec,
-        n = len,
-        data = vec)
-}
 
 
-
-plot(sapply(1:(ma_time_series@n-1),function(h){ACF(ma_time_series,h)}))
-
-    
 #####Periodogram
 
 setGeneric("periodogram", 
@@ -357,3 +336,7 @@ setMethod("plot_periodogram",
 #Example/test
 AR2 <- AR(c(0.9,-0.3),c(0,0),n=100, sd = 1)
 plot_periodogram(AR1)
+
+
+
+
