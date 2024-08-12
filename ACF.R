@@ -1,7 +1,7 @@
 #----------------------------
 # auto covariance function
 setGeneric("ACF", 
-           function(object) standardGeneric("ACF"))
+           function(ts_obj,h) standardGeneric("ACF"))
 setMethod("ACF",
           "TimeSeries", function(ts_obj,h){
               #validierungen
