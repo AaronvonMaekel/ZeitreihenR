@@ -102,4 +102,8 @@ ar_time_series <- AR(start_values = start_values, ar_params = ar_params, sd = sd
 # Plot periodogram
 plot_periodogram(ar_time_series)
 
-
+example47 <- AR(ar_params=c(0.5,0.9),n=100,start_values=c(1,0.1))
+example48 <- AR(ar_params=c(1,-0.9),n=100,start_values=c(1,0.1))
+periodogram(example47)
+plot_periodogram(example47)
+plot_periodogram(example48)

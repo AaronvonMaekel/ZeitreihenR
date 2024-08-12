@@ -297,13 +297,13 @@ plot(ma_time_series@data)
 #####Periodogram
 
 setGeneric("periodogram", 
-           function(object) standardGeneric("periodogram"))
+           function(ts_obj) standardGeneric("periodogram"))
 
 setMethod("periodogram",
           "TimeSeries",
-          function(object){
-              data <- object@data
-              n <-  object@n
+          function(ts_obj){
+              data <- ts_obj@data
+              n <-  ts_obj@n
               f <- function(ws){
                   returnvalue <- numeric(0)
                   for (w in ws){
@@ -327,17 +327,17 @@ setMethod("periodogram",
 
 setMethod("plot_periodogram",
           "TimeSeries",
-          function(object){
-              n <- object@n
-              p <- periodogram(object)
+          function(ts_obj){
+              n <- ts_obj@n
+              p <- periodogram(ts_obj)
               xs <- (0:floor(n/2))/n
               ys <- p(xs) 
               plot(xs, ys, type = "h", xlab = "Frequency", ylab = "Periodogram")
           })
 
 #Example/test
-AR2 <- AR(c(0.9,-0.3),c(0,0),n=100, sd = 1)
-plot_periodogram(AR1)
+AR2 <- AR(c(1,-0.9),c(1,0.1),n=10000, sd = 1)
+plot_periodogram(AR2)
 
 
 
