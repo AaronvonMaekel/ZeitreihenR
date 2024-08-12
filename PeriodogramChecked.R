@@ -13,9 +13,11 @@ periodogram <- function(ts_obj){
     freq_index <- seq(-floor((ts_obj@n-1)/2),floor(ts_obj@n/2))
     
     #Berechnung Periodogramm
+    i <- 0
     for (k in freq_index){
         summation <- sum(ts_obj@data*exp(-1i*2*pi*k*(1:ts_obj@n)/ts_obj@n))
-        spec[k+ceiling(ts_obj@n/2)] <- (1/ts_obj@n)*abs(summation)^2
+        spec[i] <- (1/ts_obj@n)*abs(summation)^2
+        i <- i+1
     }
     #Rückgabe als Liste
     return(periodogram=spec)

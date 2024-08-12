@@ -336,7 +336,7 @@ setMethod("plot_periodogram",
           })
 
 #Example/test
-AR2 <- AR(c(1,-0.9),c(1,0.1),n=10000, sd = 1)
+AR2 <- AR(c(1,-0.9),c(1,0.1),n=1000, sd = 1)
 plot_periodogram(AR2)
 
 
