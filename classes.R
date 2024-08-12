@@ -282,12 +282,14 @@ ma_time_series <- MA(ma_params = ma_params, sd = sd,n=m)
 plot(ma_time_series@data)
 
 #----------------------------
-# auto covariance funktion (hier wird angenommen, dass ts_obj ein Klassenobjekt ist)
+# auto covariance function
 ACF <- function(ts_obj,h){
     validObject(ts_obj)
     ts <- ts_obj@data
     n <- ts_obj@n
-    stopifnot("Input is not of type numeric"=class(ts)=="numeric")  # Do we still need this check? I assume this is done in the Validate Section
+    stopifnot("Index is not atomic"=is.atomic(h)) 
+    stopifnot("Index is not of type numeric"=is.numeric(h))
+    stopifnot("Index is not a integer"=(h %% 1 == 0))
     stopifnot("index out of bounds"=abs(h)<ts_obj@n)
     
     smpl_mean <- mean(ts)
@@ -296,10 +298,8 @@ ACF <- function(ts_obj,h){
     return(summe[1][1])
 }
 
-# We need more checks here! For instance, we should check whether we have numeric values!
+# We do not need checks here, because the validity functions will be called after the constructor
 vec_to_ts <- function(vec) {
-    stopifnot("NA values in the vector"=any(is.na(vec))==FALSE)
-    stopifnot("length of the vector is 0"=length(vec)!=0)
     len <- length(vec)
     sd_vec <- sd(vec)
     new("TimeSeries",
@@ -307,6 +307,8 @@ vec_to_ts <- function(vec) {
         n = len,
         data = vec)
 }
+
+
 
 plot(sapply(1:(ma_time_series@n-1),function(h){ACF(ma_time_series,h)}))
 
