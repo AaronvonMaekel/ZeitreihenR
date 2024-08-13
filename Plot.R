@@ -1,7 +1,26 @@
+# muss noch weg?
 library(methods)
 library(ggplot2)
 library(tibble)
 
+#'Plot functions for a time series
+#'
+#'@import methods
+#'@import ggplot2
+#'@import tibble
+#'
+#'@description The function plots a given time series.
+#'
+#'@param ts_obj A time series, must be a TimeSeries class.
+#'@param prd Prediction of a time series (optional), must be a TimeSeries class.
+#'
+#'@return The return value is the plotted time series.
+#'
+#'@examples 
+#'ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n = 100)
+#'plot_timeseries(ar_time_series)
+#'
+#'@export
 
 plot_timeseries <- function(ts_obj, prd = NULL) {
     # Check if ts_obj is a valid timeseries
@@ -24,7 +43,6 @@ plot_timeseries <- function(ts_obj, prd = NULL) {
 
     # Create the plot with the correct data
     if (is.null(prd)) {
-        
         plt <- ggplot2::ggplot(data = tb, mapping = ggplot2::aes(x = Time, y = Value))
     }
     else {
@@ -56,28 +74,25 @@ plot_timeseries <- function(ts_obj, prd = NULL) {
     
 }
 
-# Example AR-timeseries
-n <- 100
-sd <- 1
-ar_params <- c(0.6, 0.6)
-start_values <- c(1, 1)
 
-# Create AR-timeseries
-ar_time_series <- AR(start_values = start_values, ar_params = ar_params, sd = sd, n = n)
+#'Plot function for the periodogram
+#'
+#'@import methods
+#'@import ggplot2
+#'@import tibble
+#'
+#'@description The function plots the periodogram of a given time series.
+#'
+#'@param ts_obj A time series, must be a TimeSeries class.
+#'
+#'@return The return value is the plotted periodogram of a time series.
+#'
+#'@examples 
+#'ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n = 100)
+#'plot_periodogram(ar_time_series)
+#'
+#'@export
 
-
-# Plot AR-timeseries
-plot_timeseries(ar_time_series)
-
-
-# Plot timeseries with prediction
-prd <- rep(1, 10) 
-prv <- vec_to_ts(prd)
-plot_timeseries(ar_time_series,prd=prv)
-
-
-
-# Plot of periodogram
 plot_periodogram <- function(ts_obj) {
     # Check if ts_obj is valid time series
     validObject(ts_obj)
@@ -104,7 +119,26 @@ plot_periodogram <- function(ts_obj) {
     plt
 }
 
-# Example
+# Example AR-timeseries
+n <- 100
+sd <- 1
+ar_params <- c(0.6, 0.6)
+start_values <- c(1, 1)
+
+# Create AR-timeseries
+ar_time_series <- AR(start_values = start_values, ar_params = ar_params, sd = sd, n = n)
+
+# Plot AR-timeseries
+plot_timeseries(ar_time_series)
+
+
+# Plot timeseries with prediction
+prd <- rep(1, 10) 
+prv <- vec_to_ts(prd)
+plot_timeseries(ar_time_series,prd=prv)
+
+
+# Example with prediction
 n <- 100
 sd <- 1
 ar_params <- c(0.6, 0.6)
@@ -124,5 +158,3 @@ plot_periodogram(example48)
 #test
 library(patchwork) 
 (plot_timeseries(example48)|plot_periodogram(example48))
-
-
