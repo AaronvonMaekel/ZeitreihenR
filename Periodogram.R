@@ -18,14 +18,14 @@ setGeneric("periodogram",
 setMethod("periodogram",
           "TimeSeries",
           function(ts_obj){
-            # Validity
+            # Validity check
             validObject(ts_obj)
             
             data <- ts_obj@data
             len <- ts_obj@n
             
-            # Timeseries must contain more than one element
-            stopifnot("Die Zeitreihe muss mehr als ein Element enthalten."=len>1)
+            # Time series must contain more than one element
+            stopifnot("Time series must contain more than one element."=len>1)
             
             # Initializing periodogram 
             spec <- numeric(len)
@@ -36,8 +36,8 @@ setMethod("periodogram",
             # Calculating the periodogram
             i <- 0
             for (k in freq_index){
-                summation <- sum(data*exp(-1i*2*pi*k*(1:len)/len))
-                spec[i] <- (1/len)*abs(summation)^2
+                summation <- sum(data * exp(-1i*2*pi*k*(1:len)/len))
+                spec[i] <- (1/len) * abs(summation)^2
                 i <- i+1
             }
             
