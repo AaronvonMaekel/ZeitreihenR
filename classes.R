@@ -1,8 +1,8 @@
 
-# Laden der erforderlichen Bibliothek
+# Loading required libraries
 library(methods)
 
-#S4-Klassendefinitionen
+# S4 class definition 
 setClass(
     "TimeSeries",
     slots = list(
@@ -35,32 +35,28 @@ setClass(
     
 )
 
-# Benutzerdefinierte Konstruktoren
+# User-defined Constructors
 AR <- function(ar_params = numeric(0),start_values=numeric(0),n=1,sd=1) {
     p <- length(ar_params)
 
-    stopifnot("too many start values for requested length of the time series"=p<=n)
+    stopifnot("Too many start values for requested length of the time series"=p<=n)
 
-    # Initialisieren der Zeitreihe mit Nullen
+    # Initializing time series with zeros
     time_series <- numeric(n)
     
-    # White-Noise-Komponente generieren
+    # Generating white-noise components
     noise <- rnorm(n-p , 0, sd)
     
-    # Initialisieren der ersten p Werte
+    # Initializing the first p values
     time_series[1:p] <- start_values
     
-    # Generieren weiterer Werte der AR(p)-Zeitreihe (falls n>p)
+    # Generating further values for the AR(p) time series (in case n>p)
     if (n>p) {
         for (t in (p + 1):n) {
             time_series[t] <- sum(ar_params * rev(time_series[(t-p):(t-1)])) + noise[t-p]
         }
     }
-    
-    # Entfernen der zusätzlichen Initialisierungswerte
-    #time_series <- time_series[(p + 1):(n + p)]
-    
-    
+
     new("AR",
         ar_params=ar_params,
         start_values=start_values,
@@ -72,13 +68,13 @@ AR <- function(ar_params = numeric(0),start_values=numeric(0),n=1,sd=1) {
 MA <- function(ma_params = NA_real_,sd=1,n=1) {
     q <- length(ma_params)
     
-    # Initialisieren der Zeitreihe mit Nullen
+    # Initializing time series with zeros
     time_series <- numeric(n)
     
-    # White-Noise-Komponente generieren
+    # Generating white-noise components
     noise <- rnorm(n+q, 0, sd)
     
-    # Berechne die Werte der Zeitreihe
+    # Computing values for the time series
     for (t in 1:n) {
         time_series[t] <- sum(ma_params * rev(noise[t:(t+q-1)])) + noise[t+q]
     }
@@ -91,11 +87,11 @@ MA <- function(ma_params = NA_real_,sd=1,n=1) {
 }
 
 
-#Validierungen
+# Validations
 setValidity("TimeSeries", function(object){
     errors <- character(0)
     
-    #checking n
+    # Checking n
     if(is.na(object@n)|| length(object@n)== 0){
         errors <- c(errors,"length is not available")
     }
@@ -115,7 +111,7 @@ setValidity("TimeSeries", function(object){
             }
         }
     }
-    #checking standard deviation
+    # Checking standard deviation
     if(!is.na(object@sd) && length(object@sd)!= 0){
     
         if(!is.atomic(object@sd)){
@@ -131,7 +127,7 @@ setValidity("TimeSeries", function(object){
        
     }
     
-    #checking data
+    # Checking data
     if( length(object@data)== 0){
         errors <- c(errors,"data is not available")
     }
@@ -146,8 +142,6 @@ setValidity("TimeSeries", function(object){
             errors <- c(errors,"data length doesnt correspond to the saved data length")
         }
     }
-    
-    
     
     
     if (length(errors)==0){
@@ -166,28 +160,28 @@ setValidity("AR", function(object) {
         errors <- c(errors,"The number of starting values does not coincide with the amount of coefficients")
     } 
     
-    #Checking AR-Parameters
+    # Checking AR-Parameters
     if(length(object@ar_params)!=0){
         if(any(is.na(object@ar_params))){
-            errors <- c(errors,"there are missing AR parameters")
+            errors <- c(errors,"There are missing AR parameters")
         }
         if(!is.numeric(object@ar_params)){
-            errors <- c(errors,"the AR parameters are not numeric")
+            errors <- c(errors,"The AR parameters are not numeric")
         }
         
     }
     
-    #Checking start values
+    # Checking start values
     if(length(object@start_values)!=0){
         if(!is.numeric(object@start_values)){
-            errors <- c(errors,"the start values are not numeric")
+            errors <- c(errors,"The start values are not numeric")
         }
         else{
             if( any(is.na(object@start_values))){
-                errors <- c(errors,"there are missing start values")
+                errors <- c(errors,"There are missing start values")
             }
             if( any(object@data[1:length(object@start_values)]!=object@start_values)){
-                errors <- c(errors,"the start of the time series differs from the start values")
+                errors <- c(errors,"The start of the time series differs from the start values")
             }
         }
     }
@@ -204,7 +198,7 @@ setValidity("MA", function(object) {
     errors <- character(0)
     
     
-    #Checking MA-Parameters
+    # Checking MA-Parameters
     if(length(object@ma_params)!=0){
         if(any(is.na(object@ma_params))){
             errors <- c(errors,"there are missing MA parameters")
@@ -243,7 +237,7 @@ setMethod(
 )
 
 
-# Methode zur Generierung von MA(q) Daten
+# Method for resampling (i.e. re-generating) MA(q) data
 setMethod(
     "resample",
     "MA",
@@ -256,6 +250,7 @@ setMethod(
 
 
 # We do not need checks here, because the validity functions will be called after the constructor
+# Function, which transforms a (numeric) vector into a TimeSeries object
 setGeneric("vec_to_ts", 
            function(object) standardGeneric("vec_to_ts"))
 setMethod("vec_to_ts",
@@ -271,7 +266,7 @@ setMethod("vec_to_ts",
 set.seed(187)
 m <- 10
 sd <- 1
-# Beispielnutzung AR
+# Example for AR usage
 ar_params <- c(0.3, 0.7)  # AR(2)-Modell
 
 start_values = c(1,1)
