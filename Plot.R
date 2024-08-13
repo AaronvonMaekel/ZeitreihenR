@@ -11,8 +11,17 @@ plot_timeseries <- function(ts_obj, prd = NULL) {
     timeseries <- ts_obj@data
     tb <- tibble::tibble(Value = timeseries, Time = seq_along(timeseries))
     
-    header  <- paste0(class(ts_obj)[1], "-Timeseries")
+    #creating title
+    header<- "Timeseries"
     
+    if(is(ts_obj,"AR")){
+      header <- paste0("AR(",length(ts_obj@ar_params),")-",header)  
+    }
+    else if(is(ts_obj,"MA")){
+        header <- paste0("MA(",length(ts_obj@ma_params),")-",header)  
+    }
+
+
     # Create the plot with the correct data
     if (is.null(prd)) {
         
@@ -58,7 +67,7 @@ ar_time_series <- AR(start_values = start_values, ar_params = ar_params, sd = sd
 
 
 # Plot AR-timeseries
-plot_timeseries(ma_time_series)
+plot_timeseries(ar_time_series)
 
 
 # Plot timeseries with prediction
