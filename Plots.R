@@ -23,7 +23,7 @@ library(tibble)
 #'@export
 
 plot_timeseries <- function(ts_obj, prd = NULL) {
-    # Check if ts_obj is a valid timeseries
+    # Validity check
     validObject(ts_obj)
     
     # Extract data
@@ -31,7 +31,7 @@ plot_timeseries <- function(ts_obj, prd = NULL) {
     tb <- tibble::tibble(Value = timeseries, Time = seq_along(timeseries))
     
     # Creating title
-    header<- "Timeseries"
+    header <- "Time series"
     
     if (is(ts_obj,"AR")){
       header <- paste0("AR(",length(ts_obj@ar_params),")-",header)  
@@ -45,9 +45,9 @@ plot_timeseries <- function(ts_obj, prd = NULL) {
         plt <- ggplot2::ggplot(data = tb, mapping = ggplot2::aes(x = Time, y = Value))
     }
     else {
-        header <- paste(header,"with Prediction")
+        header <- paste(header,"with prediction")
         
-        #Validity Check of Prediction Object
+        #Validity check of prediction object
         validObject(prd)
         
         prd_tbl <- tibble::tibble(Value = prd@data, Time = length(timeseries) + seq_along(prd@data))
@@ -65,14 +65,10 @@ plot_timeseries <- function(ts_obj, prd = NULL) {
     if (!is.null(prd)) {    
         point2 <- ggplot2::geom_point(data = prd_tbl,shape=8,colour="green")
         name <- ggplot2::labs(shape = "")
-        
         plt <- plt  + point2 + name 
-        
     }
     plt
-    
 }
-
 
 #'Plot function for the periodogram
 #'
@@ -96,10 +92,10 @@ plot_timeseries <- function(ts_obj, prd = NULL) {
 
 plot_periodogram <- function(ts_obj) {
     
-    # Check if ts_obj is valid time series
+    # Validity check
     validObject(ts_obj)
     
-    # Extract data from timeseries
+    # Extract data
     timeseries <- ts_obj@data
     
     # Create periodogram
@@ -111,7 +107,7 @@ plot_periodogram <- function(ts_obj) {
     data <- data[freq>=0]
     freq <- freq[freq>=0]
 
-    # Plot of Periodogram 
+    # Plot of periodogram 
     tibble2plot <- tibble::tibble(Spectrum = data, FourierFrequency = freq)
     plt_base <- ggplot2::ggplot(data = tibble2plot, mapping = ggplot2::aes(x = FourierFrequency, y = Spectrum))
     lay <- ggplot2::geom_line(color = "purple")
