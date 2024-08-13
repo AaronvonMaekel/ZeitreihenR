@@ -90,6 +90,8 @@ plot_timeseries <- function(ts_obj, prd = NULL) {
 #'@examples 
 #'ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n = 100)
 #'plot_periodogram(ar_time_series)
+#'ar_time_series_2 <- AR(ar_params = c(1,-0.9), n = 100, start_values = c(1,0.1))
+#'plot_periodogram(ar_time_series_2)
 #'
 #'@export
 
