@@ -2,7 +2,7 @@
 setGeneric("DLA",
            function(ts_obj) standardGeneric("DLA"))
 setMethod("DLA",
-           "TimeSeries", 
+          "TimeSeries", 
           function(ts_obj){
             # Save number of values in timeseries
             validObject(ts_obj)
@@ -33,17 +33,17 @@ setMethod("DLA",
 }
 )
 
-#'Predictor based on the Durbin-Levinson algorithm
+#'Predictor based on the \code{Durbin-Levinson} algorithm
 #'
-#'@description Takes a TimeSeries object and predicts a specified amount of steps. Computations are based on the Durbin-Levinson algorithm. 
+#'@description Takes a \code{TimeSeries} object and predicts a specified amount of steps. Computations are based on the \code{Durbin-Levinson} algorithm. 
 #'
 #'@details This algorithm utilizes the sample autocovariance function \code{ACF} as estimator for the autocovariance.
 #'
-#'@param ts_obj A stationary time series, must be a TimeSeries class.
+#'@param ts_obj A stationary time series, must be a \code{TimeSeries} class.
 #'@param pred_len Number of steps one wants to predict.
-#'@param entire_ts Returns either the original time series with predictions appended (TRUE) or only the predictions (FALSE).
+#'@param entire_ts Logical vector, determines whether the original time series with predictions appended (TRUE) or only the predictions (FALSE) is returned.
 #'
-#'@return The return value is a TimeSeries object. Depending on the choice of \code{entire_ts}, we either obtain both the original time series with appended predictions or only the predictions made by the algorithm.
+#'@return The return value is a \code{TimeSeries} object. Depending on the choice of \code{entire_ts}, we either obtain both the original time series with appended predictions or only the predictions made by the algorithm.
 #'
 #'@examples ar_ts <- AR(ar_params = 0.5, start_values = 1, n = 50, sd = 1)
 #'dl_predictor(ar_ts, pred_len=5, entire_ts = FALSE)
@@ -62,7 +62,6 @@ setMethod("DL_predictor",
             stopifnot("Prediction length should be greater or equal to 1" =  pred_len >= 1)
             stopifnot("Entered preditcion length not compatible" = length(pred_len) == 1)
             stopifnot("Prediction length is not an integer" = pred_len %% 1 == 0)
-            
             stopifnot("entire_ts has to be logical" = is.logical(entire_ts))
             stopifnot("Entered value for entire_ts is not compatible" = length(entire_ts) == 1)
             
@@ -86,5 +85,3 @@ setMethod("DL_predictor",
             }
 }
 )
-# Testing
-DL_predictor(ar_time_series, pred_len = 5, entire_ts = FALSE)
