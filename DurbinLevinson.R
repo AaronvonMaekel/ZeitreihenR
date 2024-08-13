@@ -4,12 +4,14 @@ setGeneric("DLA",
 setMethod("DLA",
           "TimeSeries", 
           function(ts_obj){
-            # Save number of values in timeseries
-            validObject(ts_obj)
+            # Check if ts_obj is valid
+            validObject(ts_obj) 
+                     
+            # Save number of values in time series
             max_n <- ts_obj@n
     
             # Computing the ACF values
-            acf_compl <- c( sapply(1:(max_n-1), \(x) {ACF(ts_obj, x)}), 0)
+            acf_compl <- c(sapply(1:(max_n-1), \(x) {ACF(ts_obj, x)}), 0)
     
             # Compute coefficients
             for (n in 1:max_n) {
@@ -23,15 +25,14 @@ setMethod("DLA",
                     val <- sapply(1:(n-1), \(j) {ACF(ts_obj, n-j) * phi[j]})
                 
                     # Update values of phi and nu
-                    phi_n <- (1/nu)*(acf_compl[n] - sum(val))
+                    phi_n <- (1/nu) * (acf_compl[n] - sum(val))
                     phi <- phi - phi_n * rev(phi)
                     phi <- c(phi, phi_n)
-                    nu <- nu*(1 - phi_n*phi_n)
+                    nu <- nu * (1 - phi_n*phi_n)
                 }
             }
             return(phi) 
-}
-)
+})
 
 #'Predictor based on the \code{Durbin-Levinson} algorithm
 #'
@@ -45,7 +46,8 @@ setMethod("DLA",
 #'
 #'@return The return value is a \code{TimeSeries} object. Depending on the choice of \code{entire_ts}, we either obtain both the original time series with appended predictions or only the predictions made by the algorithm.
 #'
-#'@examples ar_ts <- AR(ar_params = 0.5, start_values = 1, n = 50, sd = 1)
+#'@examples 
+#'ar_ts <- AR(ar_params = 0.5, start_values = 1, n = 50, sd = 1)
 #'dl_predictor(ar_ts, pred_len=5, entire_ts = FALSE)
 #'
 #'@export
