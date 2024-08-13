@@ -74,19 +74,20 @@ plot_periodogram <- function(ts_obj) {
     
     # Create periodogram
     periodogram <- periodogram(ts_obj)
+    freq <- periodogram$freq
+    data <- periodogram$density
     
-     # Frequenzen generieren
-    n <- length(periodogram)
-    k <- seq(-floor((n-1)/2),floor(n/2))
-    freq <- 2 * pi * k / n
-    
+    #cutting off negative values
+    data <- data[freq>=0]
+    freq <- freq[freq>=0]
+
     # Periodogramm plotten
-    tibble2plot <- tibble::tibble(Value = periodogram, FourierFrequency = freq)
-    plt_base <- ggplot2::ggplot(data = tibble2plot, mapping = ggplot2::aes(x = FourierFrequency, y = Value))
+    tibble2plot <- tibble::tibble(Spectrum = data, FourierFrequency = freq)
+    plt_base <- ggplot2::ggplot(data = tibble2plot, mapping = ggplot2::aes(x = FourierFrequency, y = Spectrum))
     lay <- ggplot2::geom_line(color = "purple")
     point <- ggplot2::geom_point(color = "royalblue")
     labs <- ggplot2::ggtitle("Timeseries Periodogram")
-    plt <- plt_base + lay + point + labs  + ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 15))
+    plt <- plt_base + lay + point + labs + ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 15))
     plt
 }
 
@@ -104,6 +105,5 @@ plot_periodogram(ar_time_series)
 
 example47 <- AR(ar_params=c(0.5,0.9),n=100,start_values=c(1,0.1))
 example48 <- AR(ar_params=c(1,-0.9),n=100,start_values=c(1,0.1))
-periodogram(example47)
 plot_periodogram(example47)
 plot_periodogram(example48)

@@ -10,17 +10,19 @@ periodogram <- function(ts_obj){
     #Periodogrammspeicher
     spec <- numeric(len)
     #Frequenzbereich
-    freq_index <- seq(-floor((ts_obj@n-1)/2),floor(ts_obj@n/2))
+    freq_index <- seq(-floor((len-1)/2),floor(len/2))
     
     #Berechnung Periodogramm
     i <- 0
     for (k in freq_index){
-        summation <- sum(ts_obj@data*exp(-1i*2*pi*k*(1:ts_obj@n)/ts_obj@n))
-        spec[i] <- (1/ts_obj@n)*abs(summation)^2
+        summation <- sum(data*exp(-1i*2*pi*k*(1:len)/len))
+        spec[i] <- (1/len)*abs(summation)^2
         i <- i+1
     }
     #Rückgabe als Liste
-    return(periodogram=spec)
+    
+    freq <- freq_index * 2 * pi/len
+    return(list(freq=freq,density=spec))
 }
 
 periodogram(ar_time_series)
