@@ -1,8 +1,8 @@
 #'Periodogram for a time series
 #'
-#'@description Takes a TimeSeries object and computes the periodogram of the time series.
+#'@description Takes a \code{TimeSeries} object and computes the periodogram of the time series.
 #'
-#'@param ts_obj A time series, must be a TimeSeries class.
+#'@param ts_obj A time series, must be a \code{TimeSeries} class.
 #'
 #'@return The return value is a list with values for the frequency and the spectral density.
 #'
