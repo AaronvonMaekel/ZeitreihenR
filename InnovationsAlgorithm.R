@@ -66,17 +66,17 @@ setMethod("innovation_step",
         }
 )
 
-#'Predictor based on the Innovations algorithm
+#'Predictor based on the \code{Innovations} algorithm
 #'
-#'@description Takes a TimeSeries object and predicts a specified amount of steps. Computations are based on the Innovations algorithm. 
+#'@description Takes a \code{TimeSeries} object and predicts a specified amount of steps. Computations are based on the \code{Innovations} algorithm. 
 #'
 #'@details This algorithm utilizes the sample autocovariance function \code{ACF} as estimator for the autocovariance.
 #'
-#'@param ts_obj A stationary time series, must be a TimeSeries class.
+#'@param ts_obj A stationary time series, must be a \code{TimeSeries} class.
 #'@param pred_len Number of steps one wants to predict.
 #'@param entire_ts Returns either the original time series with predictions appended (TRUE) or only the predictions (FALSE).
 #'
-#'@return The return value is a TimeSeries object. Depending on the choice of \code{entire_ts}, we either obtain both the original time series with appended predictions or only the predictions made by the algorithm.
+#'@return The return value is a \code{TimeSeries} object. Depending on the choice of \code{entire_ts}, we either obtain both the original time series with appended predictions or only the predictions made by the algorithm.
 #'
 #'@examples ma_ts <- MA(ma_params = 0.5, n = 50, sd = 1)
 #'innovations_predictor(ma_ts, pred_len=5, entire_ts = FALSE)
@@ -96,7 +96,8 @@ setMethod("innovations_predictor",
             stopifnot("pred_len must be greater or equal to 1"=pred_len>=1)
             stopifnot("pred_lenize not applicable"=pred_len%%1==0)
             
-            validObject(ts_obj) # Checking that ts_obj is indeed a timeseries
+            # Checking that ts_obj is indeed a timeseries 
+            validObject(ts_obj) 
             
             # Initial computation of theta matrix, needed for computing X_hats
             thetas <- innovation_step(ts_obj)
@@ -141,7 +142,5 @@ setMethod("innovations_predictor",
 }
 )
 
-# Testing
-innovations_predictor(ar_time_series, pred_len=7, entire_ts = FALSE)
-plot(ar_time_series@data)
+
 
