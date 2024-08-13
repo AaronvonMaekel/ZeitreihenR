@@ -1,4 +1,5 @@
 # Loading required libraries
+# muessen wir das in imports umformulieren?? bzw library weg? bzw depends nutzen?
 library(methods)
 
 #'A S4 class to represent a time series
@@ -16,7 +17,6 @@ setClass(
         data = "numeric"
     ),
     prototype = list(sd=1,n=0,data=numeric(0))
-    
 )
 
 #'A S4 class to represent an AR time series
@@ -35,7 +35,6 @@ setClass(
     ),
     contains="TimeSeries",
     prototype = list(ar_params = numeric(0),start_values=numeric(0))
-    
 )
 
 
@@ -53,7 +52,6 @@ setClass(
     ),
     contains="TimeSeries",
     prototype = list(ma_params = numeric(0))
-    
 )
 
 # User-defined Constructors
@@ -120,6 +118,7 @@ AR <- function(ar_params = numeric(0),start_values=numeric(0),n=1,sd=1) {
 #'@examples MA(ma_params = c(0.5, 0.7), n = 40, sd = 2)
 #'
 #'@export
+
 MA <- function(ma_params = NA_real_,sd=1,n=1) {
     q <- length(ma_params)
     
@@ -142,11 +141,12 @@ MA <- function(ma_params = NA_real_,sd=1,n=1) {
 }
 
 # Validations
+
 setValidity("TimeSeries", function(object){
     errors <- character(0)
     
     # Checking n
-    if(is.na(object@n)|| length(object@n)== 0){
+    if(is.na(object@n)|| length(object@n) == 0){
         errors <- c(errors,"length is not available")
     }
     else{
@@ -203,7 +203,6 @@ setValidity("TimeSeries", function(object){
     else{
         return(errors)
     }
-  
 }) 
 
 setValidity("AR", function(object) {
@@ -250,7 +249,6 @@ setValidity("AR", function(object) {
 setValidity("MA", function(object) {
     errors <- character(0)
     
-    
     # Checking MA-Parameters
     if(length(object@ma_params)!=0){
         if(any(is.na(object@ma_params))){
@@ -259,7 +257,6 @@ setValidity("MA", function(object) {
         if(!is.numeric(object@ma_params)){
             errors <- c(errors,"the MA parameters are not numeric")
         }
-        
     }
     
     if (length(errors)==0){
@@ -291,8 +288,7 @@ setGeneric(
     name = "resample",
     def = function(ts_obj) {
         standardGeneric("resample")
-    }
-)
+    })
 
 setMethod(
     "resample",
@@ -302,10 +298,8 @@ setMethod(
            start_values = ts_obj@start_values, 
            n = ts_obj@n, 
            sd = ts_obj@sd)
-    }
-)
+    })
 
-# Method for resampling (i.e. re-generating) MA(q) data
 setMethod(
     "resample",
     "MA",
@@ -313,51 +307,34 @@ setMethod(
         MA(ma_params = object@ma_params,
            n = object@n,
            sd = object@sd)
-    }
-)
+    })
 
+#' Vector to time series
+#'
+#'@description Function which transforms a vector into a \code{TimeSeries} object. 
+#'
+#'@param ts_obj A numeric vector.
+#'
+#'@return The value returned is an \code{TimeSeries} object, having the same length as the vector.
+#'
+#'@examples 
+#'vec <- 1:10
+#'vec_to_ts(vec)
+#'
+#'@export
 
-# We do not need checks here, because the validity functions will be called after the constructor
-# Function, which transforms a (numeric) vector into a TimeSeries object
 setGeneric("vec_to_ts", 
            function(object) standardGeneric("vec_to_ts"))
 setMethod("vec_to_ts",
-          "numeric", function(vec) {
-    len <- length(vec)
-    sd_vec <- sd(vec) #empirical standard deviation
-    new("TimeSeries",
-        sd = sd_vec,
-        n = len,
-        data = vec)
-})
-
-set.seed(187)
-m <- 10
-sd <- 1
-# Example for AR usage
-ar_params <- c(0.3, 0.7)  # AR(2)-Modell
-
-start_values = c(1,1)
-# Erstellen eines Objekts der ARTimeSeries-Klasse
-ar_time_series <- AR(start_values = start_values, ar_params = ar_params, sd = sd,n=m)
-
-
-# Plotten der AR(p)-Zeitreihe
-plot(ar_time_series@data)
-
-
-# Beispielnutzung MA
-ma_params <- c(0.3, 0.7)  # MA(2)-Modell
-# Erstellen eines Objekts der MATimeSeries-Klasse
-ma_time_series <- MA(ma_params = ma_params, sd = sd,n=m)
-ma <- MA(ma_params = -0.9, sd = 1, n=4) # Checking example 2.5.5
-
-# Plotten der MA(q)-Zeitreihe
-plot(ma_time_series@data)
-
-ar_time_series <- AR(ar_params = c(0.3, 0.7), start_values = c(1,2), n = 30, sd = 1)
-ar_time_series
-resample(ar_time_series)
-ma_time_series <- MA(ma_params = c(0.5, 0.7), n = 40, sd = 2)
-ma_time_series
-resample(ma_time_series)
+          "numeric", 
+          function(vec) {
+              len <- length(vec)
+              
+              # Use the empirical standard deviation
+              sd_vec <- sd(vec)
+              
+              new("TimeSeries",
+                sd = sd_vec,
+                n = len,
+                data = vec)
+            })
