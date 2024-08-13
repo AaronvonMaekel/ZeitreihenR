@@ -1,4 +1,3 @@
-# Durbin-Levinson Algorithm function
 
 dla <- function(ts_obj){
     # Save number of values in timeseries
@@ -29,6 +28,23 @@ dla <- function(ts_obj){
     return(phi) 
 }
 
+
+#'Predictor based on the Durbin-Levinson algorithm
+#'
+#'@description Takes a TimeSeries object and predicts a specified amount of steps. Computations are based on the Durbin-Levinson algorithm. 
+#'
+#'@details This algorithm utilizes the sample autocovariance function \code{ACF} as estimator for the autocovariance.
+#'
+#'@param ts_obj A stationary time series, must be a TimeSeries class.
+#'@param pred_len Number of steps one wants to predict.
+#'@param entire_ts Returns either the original time series with predictions appended (TRUE) or only the predictions (FALSE).
+#'
+#'@return The return value is a TimeSeries object. Depending on the choice of \code{entire_ts}, we either obtain both the original time series with appended predictions or only the predictions made by the algorithm.
+#'
+#'@examples ar_ts <- AR(ar_params = 0.5, start_values = 1, n = 50, sd = 1)
+#'dl_predictor(ar_ts, pred_len=5, entire_ts = FALSE)
+#'
+#'@export
 
 # Predictor based on the DL algorithm
 dl_predictor <- function(ts_obj, pred_len=1, entire_ts = TRUE){
