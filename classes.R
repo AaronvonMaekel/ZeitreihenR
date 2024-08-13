@@ -64,12 +64,12 @@ setClass(
 #'
 #'@description Function which can be used to generate an AR(p) time series. 
 #'
-#'@details The white noise components will be generated as independent copies of a centered normal distributionf with standard deviation \code{sd}.
+#'@details The white noise components will be drawn independently from a centered normal distribution with standard deviation \code{sd}.
 #'
 #'@param ar_params Vector of AR parameters, which should have length \code{p}. Parameters must be numeric values.
 #'@param start_values Vector containing the \code{p} start values. 
-#'@param n Length of the time series one wants to obtain. Should be greater or equal to \code{p}.
-#'@param sd Standard deviation for generating the white noise components. 
+#'@param n A length-one numeric vector specifying the length of the time series one wants to obtain. Should be greater or equal to \code{p}.
+#'@param sd Standard deviation for generating the white noise components (length-one numeric vector). 
 #'
 #'@return The value returned is an \code{AR} object, having the length and start values specified in beforehand.
 #'
@@ -106,6 +106,22 @@ AR <- function(ar_params = numeric(0),start_values=numeric(0),n=1,sd=1) {
         data= time_series)
 }
 
+
+#'Constructor for MA(q) time series
+#'
+#'@description Function which can be used to generate an MA(q) time series. 
+#'
+#'@details The white noise components will be drawn independently from a centered normal distribution with standard deviation \code{sd}.
+#'
+#'@param ma_params Vector of MA parameters, which should have length \code{q}. Parameters must be numeric values.
+#'@param n A length-one numeric vector specifying the length of the time series one wants to obtain. Should be greater or equal to \code{p}.
+#'@param sd Standard deviation for generating the white noise components (length-one numeric vector). 
+#'
+#'@return The value returned is a \code{MA} object, having the length specified in beforehand.
+#'
+#'@examples MA(ma_params = c(0.5, 0.7), n = 40, sd = 2)
+#'
+#'@export
 MA <- function(ma_params = NA_real_,sd=1,n=1) {
     q <- length(ma_params)
     
