@@ -1,7 +1,5 @@
-
 # Loading required libraries
 library(methods)
-
 
 #'A S4 class to represent a time series
 #'
@@ -143,7 +141,6 @@ MA <- function(ma_params = NA_real_,sd=1,n=1) {
         n=n)
 }
 
-
 # Validations
 setValidity("TimeSeries", function(object){
     errors <- character(0)
@@ -199,7 +196,6 @@ setValidity("TimeSeries", function(object){
             errors <- c(errors,"data length doesnt correspond to the saved data length")
         }
     }
-    
     
     if (length(errors)==0){
         return(TRUE)
@@ -274,10 +270,26 @@ setValidity("MA", function(object) {
     }
 })
 
-# Resampling
+
+#'Resample function for a time series
+#'
+#'@description Function which can be used to resample a time series. 
+#'
+#'@param ts_obj A time series, must be a \code{TimeSeries} class.
+#'
+#'@return The value returned is an \code{TimeSeries} object, having the same length, start values, parameters and standard deviation as the origin time series.
+#'
+#'@examples 
+#'ar_time_series <- AR(ar_params = c(0.3, 0.7), start_values = c(1,2), n = 30, sd = 1)
+#'resample(ar_time_series)
+#'ma_time_series <- MA(ma_params = c(0.5, 0.7), n = 40, sd = 2)
+#'resample(ma_time_series)
+#'
+#'@export
+
 setGeneric(
     name = "resample",
-    def = function(object) {
+    def = function(ts_obj) {
         standardGeneric("resample")
     }
 )
@@ -285,14 +297,13 @@ setGeneric(
 setMethod(
     "resample",
     "AR",
-    function(object) {
-        AR(ar_params = object@ar_params, 
-           start_values = object@start_values, 
-           n = object@n, 
-           sd = object@sd)
+    function(ts_obj) {
+        AR(ar_params = ts_obj@ar_params, 
+           start_values = ts_obj@start_values, 
+           n = ts_obj@n, 
+           sd = ts_obj@sd)
     }
 )
-
 
 # Method for resampling (i.e. re-generating) MA(q) data
 setMethod(
@@ -344,3 +355,9 @@ ma <- MA(ma_params = -0.9, sd = 1, n=4) # Checking example 2.5.5
 # Plotten der MA(q)-Zeitreihe
 plot(ma_time_series@data)
 
+ar_time_series <- AR(ar_params = c(0.3, 0.7), start_values = c(1,2), n = 30, sd = 1)
+ar_time_series
+resample(ar_time_series)
+ma_time_series <- MA(ma_params = c(0.5, 0.7), n = 40, sd = 2)
+ma_time_series
+resample(ma_time_series)
