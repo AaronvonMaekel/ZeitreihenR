@@ -1,10 +1,12 @@
-# Innovations algorithm (operarting stepwise)
+# Innovations algorithm (operating stepwise)
 
 innovations_algorithm_2 <- function(ts_obj, thetas_prev = matrix(ACF(ts_obj, 1)/ACF(ts_obj, 0))) {
     len <- ts_obj@n
     cov <- ACF(ts_obj,0)
     v <- cov
     out_len <- nrow(thetas_prev)+1
+    
+    validObject(ts_obj) # Checking that ts_obj is indeed a timeseries
     
     # Checking matrix
     stopifnot("The matrix has to be a square matrix"=nrow(thetas_prev)==ncol(thetas_prev))
@@ -120,3 +122,4 @@ innovations_predict <- function (ts_obj, pred_len = 1, entire_ts = TRUE){
 # Testing
 innovations_predict(ar_time_series, pred_len=7, entire_ts = FALSE)
 plot(ar_time_series@data)
+

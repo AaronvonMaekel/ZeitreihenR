@@ -269,7 +269,7 @@ setMethod("vec_to_ts",
 })
 
 set.seed(187)
-m <- 17
+m <- 10
 sd <- 1
 # Beispielnutzung AR
 ar_params <- c(0.3, 0.7)  # AR(2)-Modell
@@ -287,7 +287,7 @@ plot(ar_time_series@data)
 ma_params <- c(0.3, 0.7)  # MA(2)-Modell
 # Erstellen eines Objekts der MATimeSeries-Klasse
 ma_time_series <- MA(ma_params = ma_params, sd = sd,n=m)
-
+ma <- MA(ma_params = -0.9, sd = 1, n=4) # Checking example 2.5.5
 
 # Plotten der MA(q)-Zeitreihe
 plot(ma_time_series@data)
