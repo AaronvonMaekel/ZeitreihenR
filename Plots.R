@@ -1,12 +1,6 @@
-# muss noch weg?
-library(methods)
-library(ggplot2)
-library(tibble)
-
 #'Plot functions for a time series
 #'
-#'@import methods
-#'@import ggplot2
+#'@importFrom ggplot2 ggplot aes geom_line ggtitle theme geom_point labs element_text
 #'@import tibble
 #'
 #'@description The function provides plots for a given time series.
@@ -72,8 +66,7 @@ plot_timeseries <- function(ts_obj, prd = NULL) {
 
 #'Plot function for the periodogram
 #'
-#'@import methods
-#'@import ggplot2
+#'@importFrom ggplot2 ggplot aes geom_line ggtitle theme geom_point labs element_text
 #'@import tibble
 #'
 #'@description The function plots the periodogram of a given time series.
@@ -116,4 +109,3 @@ plot_periodogram <- function(ts_obj) {
     plt <- plt_base + lay + point + labs + ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 15))
     plt
 }
-
