@@ -2,6 +2,7 @@
 
 dla <- function(ts_obj){
     # Save number of values in timeseries
+    validObject(ts_obj)
     max_n <- ts_obj@n
     
     # Computing the ACF values
@@ -33,6 +34,7 @@ dla <- function(ts_obj){
 dl_predictor <- function(ts_obj, pred_len=1, entire_ts = TRUE){
     
     # Checking validity
+    validObject(ts_obj)
     stopifnot("Prediction length should be greater or equal to 1" =  pred_len >= 1)
     stopifnot("Entered preditcion length not compatible" = length(pred_len) == 1)
     stopifnot("Prediction length is not an integer" = pred_len %% 1 == 0)
