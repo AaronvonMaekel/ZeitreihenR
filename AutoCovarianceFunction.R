@@ -3,7 +3,7 @@
 #'@description This function takes a \code{TimeSeries} object and computes the sample autocovariance function of the data.
 #'
 #'@param ts_obj A time series, which must be a \code{TimeSeries} class.
-#'@param h Point for which we want the function value of the sample autocovariance function, must be a length one numeric vector.
+#'@param h Point for which we want the function value of the sample autocovariance function, which must be a length-one numeric vector.
 #'
 #'@return The return value is a numeric value which can be regarded as estimation of the autocovariance function.
 #'
@@ -17,7 +17,7 @@ setGeneric("ACF",
            function(ts_obj,h) standardGeneric("ACF"))
 setMethod("ACF",
           "TimeSeries", function(ts_obj,h){
-              #validierungen
+              # Validity checks
               validObject(ts_obj)
               stopifnot("Index is not atomic"=is.atomic(h)) 
               stopifnot("Index is not of type numeric"=is.numeric(h))
