@@ -36,6 +36,24 @@ setClass(
 )
 
 # User-defined Constructors
+
+#'Constructor for AR(p) time series
+#'
+#'@description Function which can be used to generate an AR(p) time series. 
+#'
+#'@details The white noise components will be generated as independent copies of a centered normal distributionf with standard deviation \code{sd}.
+#'
+#'@param ar_params Vector of AR parameters, which should have length \code{p}. Parameters must be numeric values.
+#'@param start_values Vector containing the \code{p} start values. 
+#'@param n Length of the time series one wants to obtain. Should be greater or equal to \code{p}.
+#'@param sd Standard deviation for generating the white noise components. 
+#'
+#'@return The value returned is an \code{AR} object, having the length and start values specified in beforehand.
+#'
+#'@examples AR(ar_params = c(0.3, 0.7), start_values = c(1,2), n = 30, sd = 1)
+#'
+#'@export
+
 AR <- function(ar_params = numeric(0),start_values=numeric(0),n=1,sd=1) {
     p <- length(ar_params)
 
@@ -286,54 +304,4 @@ ma <- MA(ma_params = -0.9, sd = 1, n=4) # Checking example 2.5.5
 
 # Plotten der MA(q)-Zeitreihe
 plot(ma_time_series@data)
-
-
-
-#####Periodogram
-
-setGeneric("periodogram", 
-           function(ts_obj) standardGeneric("periodogram"))
-
-setMethod("periodogram",
-          "TimeSeries",
-          function(ts_obj){
-              data <- ts_obj@data
-              n <-  ts_obj@n
-              f <- function(ws){
-                  returnvalue <- numeric(0)
-                  for (w in ws){
-                      if (abs(n * w - round(n * w)) > .Machine$double.eps^0.5 || w > 1/2 || w < 0){
-                          stop("w must be on form w = j/n, 0 <= j <= n/2, where n is size of dataset")}
-                      cos_trans <- 0
-                      sin_trans <- 0
-                      for (t in 1:n){
-                          cos_trans <- cos_trans + data[t]*cos(2*pi*w*t)
-                          sin_trans <-sin_trans + data[t]*sin(2*pi*w*t) 
-                      }
-                      returnvalue <-  c(returnvalue,((1/n)*(cos_trans^2 + sin_trans^2)))
-                  }
-                  return(returnvalue)
-              }
-              
-              return(f)
-          })
-
-
-
-setMethod("plot_periodogram",
-          "TimeSeries",
-          function(ts_obj){
-              n <- ts_obj@n
-              p <- periodogram(ts_obj)
-              xs <- (0:floor(n/2))/n
-              ys <- p(xs) 
-              plot(xs, ys, type = "h", xlab = "Frequency", ylab = "Periodogram")
-          })
-
-#Example/test
-AR2 <- AR(c(1,-0.9),c(1,0.1),n=1000, sd = 1)
-plot_periodogram(AR2)
-
-
-
 
