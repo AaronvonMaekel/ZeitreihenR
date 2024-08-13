@@ -1,37 +1,4 @@
-innovations_algorithm <- function(ts_obj) {
-    len <- ts_obj@n
-    cov <- ACF(ts_obj,0)
-    v <- rep(0,len)
-    v[1] <- cov
-    theta <- matrix(0,len,len)
-  
-    acf_compl <- c(sapply(1:(len-1), \(x) {ACF(ts_obj, x)}), 0)
-    for(n in 1:len) {
-        if (n==1) {
-            theta[1, 1] <- 1/v[1] * acf_compl[1]
-            v[2] <- cov - theta[1, 1]^2 * v[1]
-        } else {
-            for (k in 0:(n-1)) {
-                if (k == 0){
-                    theta[n, n] <- acf_compl[n] / v[1]
-                } else {
-                    sum_thetas <- 0
-                    for (j in 0:(k-1)) {
-                        sum_thetas <- sum_thetas + theta[k,k-j]*theta[n,n-j]*v[j+1]
-                    }
-                    theta[n,n-k] <- 1/v[k+1] * (acf_compl[n-k] - sum_thetas)
-                }
-                
-            }
-            sum_v <- 0
-            for(j in 0:(n-1)) {
-                sum_v <- sum_v + theta[n,n-j]^2 * v[j+1]
-            }
-            v[n+1] <- cov - sum_v
-        }
-    }
-    return(theta)
-}
+# Innovations algorithm (operarting stepwise)
 
 innovations_algorithm_2 <- function(ts_obj, thetas_prev = matrix(ACF(ts_obj, 1)/ACF(ts_obj, 0))) {
     len <- ts_obj@n
@@ -39,7 +6,7 @@ innovations_algorithm_2 <- function(ts_obj, thetas_prev = matrix(ACF(ts_obj, 1)/
     v <- cov
     out_len <- nrow(thetas_prev)+1
     
-    # check matrix
+    # Checking matrix
     stopifnot("The matrix has to be a square matrix"=nrow(thetas_prev)==ncol(thetas_prev))
     
     # Checking for lower triangular matrix
@@ -53,12 +20,12 @@ innovations_algorithm_2 <- function(ts_obj, thetas_prev = matrix(ACF(ts_obj, 1)/
         }
     }
     
-    # We should also check for "unallowed" values in the matrix, such as NA or letters!!!
+    # Checking for unallowed entries
     stopifnot("Entry in the matrix is not numeric"=is.numeric(thetas_prev))
     stopifnot("NA entry contained in matrix"=all(!is.na(thetas_prev)))
     
     
-    # Compute v's
+    # Compute v's, which should be known so far
     if (nrow(thetas_prev)!=0){
         for (n in 1:nrow(thetas_prev)) {
             calc_sum <- 0
@@ -69,10 +36,12 @@ innovations_algorithm_2 <- function(ts_obj, thetas_prev = matrix(ACF(ts_obj, 1)/
         }
     }
     
+    # Intialize theta matrix
     theta <- matrix(0,out_len,out_len)
     theta[1:nrow(thetas_prev), 1:ncol(thetas_prev)] <- thetas_prev
     acf_compl <- c(sapply(1:(ts_obj@n-1), \(x) {ACF(ts_obj, x)}), 0)
-
+    
+    # Computing the new theta coefficients
     for (k in 0:(out_len-1)) {
         if (k == 0){
             theta[out_len, out_len] <- acf_compl[out_len] / v[1] 
@@ -81,52 +50,59 @@ innovations_algorithm_2 <- function(ts_obj, thetas_prev = matrix(ACF(ts_obj, 1)/
             for (j in 0:(k-1)) {
                 sum_thetas <- sum_thetas + theta[k,k-j]*theta[out_len,out_len-j]*v[j+1]
             }
+            # Filling in the values at the appropriate place in the matrix
             theta[out_len,out_len-k] <- 1/v[k+1] * (acf_compl[out_len-k] - sum_thetas)
         }
                 
     }
+    # Returning updated matrix, which has one additional row and column
     return(theta)
 }
 
 
-# First implementation of a predictor for the innovations algorithm.
+# Predictor based on the innovations algorithm.
 # entire_ts TRUE returns both predictions and entered TS data, whereas FALSE will only return the predicted values.
 # Note: Value returned will always be a ts_obj
 
-innovations_predict <- function (ts_obj, steps = 1, entire_ts = TRUE){
+innovations_predict <- function (ts_obj, pred_len = 1, entire_ts = TRUE){
     
-    # ToDo: Check whether entire_ts is logical and steps has a reasonable value
+    # Checking whether pred_len and entire_ts are specified properly
+    
     stopifnot("entire_ts not logical"=is.logical(entire_ts))
-    stopifnot("steps not numeric"=is.numeric(steps))
-    stopifnot("steps must be greater or equal to 1"=steps>=1)
-    stopifnot("stepsize not applicable"=steps%%1==0)
+    stopifnot("pred_len not numeric"=is.numeric(pred_len))
+    stopifnot("pred_len must be greater or equal to 1"=pred_len>=1)
+    stopifnot("pred_lenize not applicable"=pred_len%%1==0)
     
     validObject(ts_obj) # Checking that ts_obj is indeed a timeseries
     
+    # Initial computation of theta matrix, needed for computing X_hats
     thetas <- innovations_algorithm_2(ts_obj)
     for (n in 3:(ts_obj@n-1)){
         thetas <- innovations_algorithm_2(ts_obj, thetas_prev = thetas)
     }
+    
     X_hat <- 0
     len <- ts_obj@n
     
-    # Compute X_hats
+    # Compute X_hat_1 until X_hat_n
     for (n in 1:(len-1)){
         X <- ts_obj@data[1:n]
         theta_calc <- thetas[n, ][1:n]
         new_X <- sum(theta_calc * rev(X - X_hat))
         X_hat <- c(X_hat, new_X)
-    } # Note: We have now obtained X_hat_1 to X_hat_n
+    }
     
     
     # Compute predictions
-    for (h in 1:steps){
+    for (h in 1:pred_len){
+        # Update theta matrix one step
         thetas <- innovations_algorithm_2(ts_obj, thetas_prev = thetas)
         theta_calc <- thetas[len - 1 + h ,]
         pre <- 0
         for (j in h:(len - 1 + h)){
             pre <-  pre + theta_calc[j] * (ts_obj@data[len+h-j] - X_hat[len+h-j])
         }
+        # Append predicted value to timeseries (needed for further estimates)
         ts_obj@data <- c(ts_obj@data, pre)
         ts_obj@n <- ts_obj@n + 1
     }
@@ -141,6 +117,6 @@ innovations_predict <- function (ts_obj, steps = 1, entire_ts = TRUE){
     }
 }
 
-
-innovations_predict(ar_time_series, steps=7, entire_ts = FALSE)
+# Testing
+innovations_predict(ar_time_series, pred_len=7, entire_ts = FALSE)
 plot(ar_time_series@data)
