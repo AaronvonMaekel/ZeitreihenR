@@ -2,7 +2,14 @@
 # Loading required libraries
 library(methods)
 
-# S4 class definition 
+
+#'A S4 class to represent a time series
+#'
+#'@slot sd Standard deviation used for generating the white noise components (length-one numeric vector). 
+#'@slot n Length of the time series (length-one numeric vector). 
+#'@slot data Values of the time series (numeric vector with length equal to \code{n}).
+#'
+#'@export
 setClass(
     "TimeSeries",
     slots = list(
@@ -14,6 +21,14 @@ setClass(
     
 )
 
+#'A S4 class to represent an AR time series
+#'
+#'Child class of \code{TimeSeries}, used for AR(p) time series. \code{p} refers to the length of \code{ar_params}.
+#'
+#'@slot ar_params Numeric vector containing the parameters for generating an AR time series, length must be equal to the length of \code{start_values}.
+#'@slot start_values Numeric vector containing the start values of an AR time series, length must be equal to the length of \code{ar_params}.
+#'
+#'@export
 setClass(
     "AR",
     slots = list(
@@ -25,6 +40,14 @@ setClass(
     
 )
 
+
+#'A S4 class to represent a MA time series
+#'
+#'Child class of \code{TimeSeries}, used for MA(q) time series. \code{q} refers to the length of \code{ma_params}.
+#'
+#'@slot ma_params Numeric vector containing the parameters for generating an MA time series.
+#'
+#'@export
 setClass(
     "MA",
     slots = list(
