@@ -69,7 +69,7 @@ setMethod("DL_predictor",
             in_len <- ts_obj@n
             for (j in 1:pred_len){
                 # Computing estimate using coefficients obtained from the DL algorithm
-                new_val <- sum(dla(ts_obj) * rev(ts_obj@data))
+                new_val <- sum(DLA(ts_obj) * rev(ts_obj@data))
                 
                 # Appending estimated value to the time series (needed for further estimates)
                 ts_obj@data <- c(ts_obj@data, new_val)
