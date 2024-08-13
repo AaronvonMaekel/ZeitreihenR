@@ -324,7 +324,7 @@ setMethod(
 #'@export
 
 setGeneric("vec_to_ts", 
-           function(object) standardGeneric("vec_to_ts"))
+           function(vec) standardGeneric("vec_to_ts"))
 setMethod("vec_to_ts",
           "numeric", 
           function(vec) {
