@@ -61,12 +61,24 @@ innovations_algorithm_2 <- function(ts_obj, thetas_prev = matrix(ACF(ts_obj, 1)/
     return(theta)
 }
 
+#'Predictor based on the Innovarions algorithm
+#'
+#'@description Takes a TimeSeries object and predicts a specified amount of steps. Computations are based on the Innovations algorithm. 
+#'
+#'@details This algorithm utilizes the sample autocovariance function \code{ACF} as estimator for the autocovariance.
+#'
+#'@param ts_obj A stationary time series, must be a TimeSeries class.
+#'@param pred_len Number of steps one wants to predict.
+#'@param entire_ts Returns either the original time series with predictions appended (TRUE) or only the predictions (FALSE).
+#'
+#'@return The return value is a TimeSeries object. Depending on the choice of \code{entire_ts}, we either obtain both the original time series with appended predictions or only the predictions made by the algorithm.
+#'
+#'@examples ma_ts <- MA(ma_params = 0.5, n = 50, sd = 1)
+#'innovations_predictor(ma_ts, pred_len=5, entire_ts = FALSE)
+#'
+#'@export
 
-# Predictor based on the innovations algorithm.
-# entire_ts TRUE returns both predictions and entered TS data, whereas FALSE will only return the predicted values.
-# Note: Value returned will always be a ts_obj
-
-innovations_predict <- function (ts_obj, pred_len = 1, entire_ts = TRUE){
+innovations_predictor <- function (ts_obj, pred_len = 1, entire_ts = TRUE){
     
     # Checking whether pred_len and entire_ts are specified properly
     
@@ -120,6 +132,6 @@ innovations_predict <- function (ts_obj, pred_len = 1, entire_ts = TRUE){
 }
 
 # Testing
-innovations_predict(ar_time_series, pred_len=7, entire_ts = FALSE)
+innovations_predictor(ar_time_series, pred_len=7, entire_ts = FALSE)
 plot(ar_time_series@data)
 
