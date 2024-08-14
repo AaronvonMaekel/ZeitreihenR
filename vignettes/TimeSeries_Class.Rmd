@@ -1,0 +1,22 @@
+---
+title: "TimeSeries_Class"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{TimeSeries_Class}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ZeitreihenR)
+library(ggplot2)
+library(tibble)
+```
+Test123
