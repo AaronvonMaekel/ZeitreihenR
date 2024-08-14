@@ -46,7 +46,7 @@ A *AR(p) Process* is a stochastical process which is described by the following 
 
 We start with an example for an AR(2) time series, where we have two parameters and 2 start values.
 
-```{r setup}
+```{r}
 ar1 <- AR(ar_params = c(0.3, 0.7), start_values = c(1,2), n = 30, sd = 1) 
 plot_timeseries(ar1) 
 ```
@@ -56,8 +56,32 @@ plot_timeseries(ar1)
 A *MA(q) Process* is a stochastical process which is described by the following model: $X_t$ is a moving-average process of order $q$ if $X_t =Z_t +\theta_1Z_{t−1} +···+\theta_q Z_{t−q}$, where $Z_t \sim \text{WN}(0,\sigma^2)$ and $\theta_1,...,\theta_q$ are constants. We call $Z_t$ white noise and assume that the white noise components are drawn independently from a centered normal distribution with standard deviation *sd*. The function *AR* is a method for the TimeSeries class and generates an AR(p) time series.
 
 #### Example for MA TimeSeries
-
-```{r setup}
+Again, we start with a small example for a MA time series with two parameters and length 30. Note that the MA series does not contain start values. 
+```{r}
 ma1 <- MA(ma_params = c(0.3,0.7), n=30, sd=1)
 plot_timeseries(ma1)
+```
+### Resample function
+The resample function is a function which can be used to resample a time series. It takes a TimeSeries object as input and returns another Timeseries object having the same length, start values, parameters and standard deviation as the original time series.
+
+#### Examples of resampling
+We take the two generated from above, resample it and plot the original and the resampled one.
+```{r}
+ar1 <- AR(ar_params = c(0.3, 0.7), start_values = c(1,2), n = 30, sd = 1)
+plot_timeseries(ar1)
+plot_timeseries(resample(ar1))
+```
+```{r}
+ma1 <- MA(ma_params = c(0.5, 0.7), n = 30, sd = 1)
+plot_timeseries(ma1)
+plot_timeseries(resample(ma1))
+```
+
+### Vector to time series
+The Vector to time series function *vec_to_ts* transforms a vector into a TimeSeries object. 
+It takes a numeric vector and returns a TimeSeries object, having the same length as the vector.
+```{r}
+vec <- 1:10
+vects <- vec_to_ts(vec)
+plot_timeseries(vects)
 ```
