@@ -4,7 +4,7 @@
 #'@slot n Length of the time series (length-one numeric vector). 
 #'@slot data Values of the time series (numeric vector with length equal to \code{n}).
 #'
-#'@export
+#'@exportClass TimeSeries
 
 setClass(
     "TimeSeries",
@@ -23,7 +23,7 @@ setClass(
 #'@slot ar_params Numeric vector containing the parameters for generating an AR time series, length must be equal to the length of \code{start_values}.
 #'@slot start_values Numeric vector containing the start values of an AR time series, length must be equal to the length of \code{ar_params}.
 #'
-#'@export
+#'@exportClass AR
 
 setClass(
     "AR",
@@ -41,7 +41,7 @@ setClass(
 #'
 #'@slot ma_params Numeric vector containing the parameters for generating an MA time series.
 #'
-#'@export
+#'@exportClass MA
 
 setClass(
     "MA",
