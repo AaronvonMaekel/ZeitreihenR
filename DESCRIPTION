@@ -19,7 +19,7 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 Collate:
-  TimeSeriesR-package.R
+  ZeitreihenR-package.R
   classes.R
   AutoCovarianceFunction.R
   DurbinLevinson.R
