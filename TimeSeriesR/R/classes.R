@@ -1,7 +1,3 @@
-# Loading required libraries
-# muessen wir das in imports umformulieren?? bzw library weg? bzw depends nutzen?
-library(methods)
-
 #'A S4 class to represent a time series
 #'
 #'@slot sd Standard deviation used for generating the white noise components (length-one numeric vector). 
@@ -9,6 +5,7 @@ library(methods)
 #'@slot data Values of the time series (numeric vector with length equal to \code{n}).
 #'
 #'@export
+
 setClass(
     "TimeSeries",
     slots = list(
@@ -27,6 +24,7 @@ setClass(
 #'@slot start_values Numeric vector containing the start values of an AR time series, length must be equal to the length of \code{ar_params}.
 #'
 #'@export
+
 setClass(
     "AR",
     slots = list(
@@ -37,7 +35,6 @@ setClass(
     prototype = list(ar_params = numeric(0),start_values=numeric(0))
 )
 
-
 #'A S4 class to represent a MA time series
 #'
 #'Child class of \code{TimeSeries}, used for MA(q) time series. \code{q} refers to the length of \code{ma_params}.
@@ -45,6 +42,7 @@ setClass(
 #'@slot ma_params Numeric vector containing the parameters for generating an MA time series.
 #'
 #'@export
+
 setClass(
     "MA",
     slots = list(
@@ -53,8 +51,6 @@ setClass(
     contains="TimeSeries",
     prototype = list(ma_params = numeric(0))
 )
-
-# User-defined Constructors
 
 #'Constructor for AR(p) time series
 #'
@@ -75,9 +71,9 @@ setClass(
 
 AR <- function(ar_params = numeric(0),start_values=numeric(0),n=1,sd=1) {
     p <- length(ar_params)
-
+    
     stopifnot("Too many start values for requested length of the time series"=p<=n)
-
+    
     # Initializing time series with zeros
     time_series <- numeric(n)
     
@@ -93,7 +89,7 @@ AR <- function(ar_params = numeric(0),start_values=numeric(0),n=1,sd=1) {
             time_series[t] <- sum(ar_params * rev(time_series[(t-p):(t-1)])) + noise[t-p]
         }
     }
-
+    
     new("AR",
         ar_params=ar_params,
         start_values=start_values,
@@ -101,7 +97,6 @@ AR <- function(ar_params = numeric(0),start_values=numeric(0),n=1,sd=1) {
         sd=sd,
         data= time_series)
 }
-
 
 #'Constructor for MA(q) time series
 #'
@@ -151,7 +146,7 @@ setValidity("TimeSeries", function(object){
     }
     else{
         if (!is.atomic(object@n)){
-        errors <- c(errors,"length is not atomic")
+            errors <- c(errors,"length is not atomic")
         }
         else if (!is.numeric(object@n)){
             errors <- c(errors,"length is not a numeric value")
@@ -167,7 +162,7 @@ setValidity("TimeSeries", function(object){
     }
     # Checking standard deviation
     if(!is.na(object@sd) && length(object@sd)!= 0){
-    
+        
         if(!is.atomic(object@sd)){
             errors <- c(errors,'standard deviation is not atomic')
         }
@@ -178,7 +173,7 @@ setValidity("TimeSeries", function(object){
         else if (0>object@sd){
             errors <- c(errors,"standard deviation is negative")
         }
-       
+        
     }
     
     # Checking data
@@ -267,7 +262,6 @@ setValidity("MA", function(object) {
     }
 })
 
-
 #'Resample function for a time series
 #'
 #'@description Function which can be used to resample a time series. 
@@ -303,10 +297,10 @@ setMethod(
 setMethod(
     "resample",
     "MA",
-    function(object) {
-        MA(ma_params = object@ma_params,
-           n = object@n,
-           sd = object@sd)
+    function(ts_obj) {
+        MA(ma_params = ts_obj@ma_params,
+           n = ts_obj@n,
+           sd = ts_obj@sd)
     })
 
 #' Vector to time series
@@ -334,7 +328,7 @@ setMethod("vec_to_ts",
               sd_vec <- sd(vec)
               
               new("TimeSeries",
-                sd = sd_vec,
-                n = len,
-                data = vec)
-            })
+                  sd = sd_vec,
+                  n = len,
+                  data = vec)
+          })
