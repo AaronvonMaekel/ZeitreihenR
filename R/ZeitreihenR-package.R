@@ -11,5 +11,7 @@
 #' @importFrom ggplot2 labs
 #' @importFrom ggplot2 theme
 #' @importFrom methods is
+#' @importFrom methods new
+#' @importFrom methods validObject
 ## usethis namespace: end
 NULL
