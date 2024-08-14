@@ -1,6 +1,6 @@
 Package: ZeitreihenR
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Package for constructing TimeSeries objects, using different algorithms and visualisations
+Version: 1.0.0
 Authors@R: 
     c( person("Eivind","Hjertholm",role = "aut", email = "xxx@stud.uni-heidelberg.de"),
     person("Aaron","Mäkel", role = "cre", email = "cv234@stud.uni-heidelberg.de"),
@@ -8,14 +8,15 @@ Authors@R:
     person("Julia"," Renner",role = "aut", email = "xxx@stud.uni-heidelberg.de"),
     person("Klaus","Stier", role = "aut", email = "xxx@stud.uni-heidelberg.de"))
 Description: The package contains S4-classes as well as methods for time series and predictions for them. The definitions and methods are based on the book *Introduction to Time-Series Analysis and Forecasting* by Peter J. Brockwell and Richard A. Davis.
-License: use_gpl_license() 
+License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports:
-  methods,
-  tibble,
-  ggplot2
+    methods,
+    tibble,
+    ggplot2,
+    stats
 Suggests: 
     knitr,
     rmarkdown
@@ -28,4 +29,3 @@ Collate:
   InnovationsAlgorithm.R
   Periodogram.R
   Plots.R
-  

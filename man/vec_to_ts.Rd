@@ -7,7 +7,7 @@
 vec_to_ts(vec)
 }
 \arguments{
-\item{ts_obj}{A numeric vector.}
+\item{vec}{A numeric vector.}
 }
 \value{
 The value returned is an \code{TimeSeries} object, having the same length as the vector.

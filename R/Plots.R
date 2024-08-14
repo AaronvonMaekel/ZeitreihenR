@@ -1,7 +1,5 @@
 #'Plot functions for a time series
 #'
-#'@import tibble
-#'
 #'@description The function provides plots for a given time series.
 #'
 #'@param ts_obj A time series, must be a \code{TimeSeries} class.
@@ -35,7 +33,7 @@ plot_timeseries <- function(ts_obj, prd = NULL) {
 
     # Create the plot with correct data
     if (is.null(prd)) {
-        plt <- ggplot2::ggplot(data = tb, mapping = ggplot2::aes(x = Time, y = Value))
+        plt <- ggplot2::ggplot(data = tb, mapping = ggplot2::aes(x = tb$Time, y = tb$Value))
     }
     else {
         header <- paste(header,"with prediction")
@@ -45,7 +43,7 @@ plot_timeseries <- function(ts_obj, prd = NULL) {
 
         prd_tbl <- tibble::tibble(Value = prd@data, Time = length(timeseries) + seq_along(prd@data))
         tb_combine <- rbind(tb, prd_tbl)
-        plt <- ggplot2::ggplot(data = tb_combine, mapping = ggplot2::aes(x = Time, y = Value))
+        plt <- ggplot2::ggplot(data = tb_combine, mapping = ggplot2::aes(x = tb_combine$Time, y = tb_combine$Value))
     }
 
     line <- ggplot2::geom_line(color = "purple")
@@ -64,9 +62,6 @@ plot_timeseries <- function(ts_obj, prd = NULL) {
 }
 
 #'Plot function for the periodogram
-#'
-#'@importFrom ggplot2 ggplot aes geom_line ggtitle theme geom_point labs element_text
-#'@import tibble
 #'
 #'@description The function plots the periodogram of a given time series.
 #'
@@ -101,7 +96,7 @@ plot_periodogram <- function(ts_obj) {
 
     # Plot of periodogram
     tibble2plot <- tibble::tibble(Spectrum = data, FourierFrequency = freq)
-    plt_base <- ggplot2::ggplot(data = tibble2plot, mapping = ggplot2::aes(x = FourierFrequency, y = Spectrum))
+    plt_base <- ggplot2::ggplot(data = tibble2plot, mapping = ggplot2::aes(x = tibble2plot$FourierFrequency, y = tibble2plot$Spectrum))
     lay <- ggplot2::geom_line(color = "purple")
     point <- ggplot2::geom_point(color = "royalblue")
     labs <- ggplot2::ggtitle("Periodogram")

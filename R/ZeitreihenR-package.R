@@ -13,5 +13,7 @@
 #' @importFrom methods is
 #' @importFrom methods new
 #' @importFrom methods validObject
+#' @importFrom stats rnorm
+#' @importFrom stats sd
 ## usethis namespace: end
 NULL

@@ -1,7 +1,7 @@
 #'A S4 class to represent a time series
 #'
-#'@slot sd Standard deviation used for generating the white noise components (length-one numeric vector). 
-#'@slot n Length of the time series (length-one numeric vector). 
+#'@slot sd Standard deviation used for generating the white noise components (length-one numeric vector).
+#'@slot n Length of the time series (length-one numeric vector).
 #'@slot data Values of the time series (numeric vector with length equal to \code{n}).
 #'
 #'@export
@@ -54,14 +54,14 @@ setClass(
 
 #'Constructor for AR(p) time series
 #'
-#'@description Function which can be used to generate an AR(p) time series. 
+#'@description Function which can be used to generate an AR(p) time series.
 #'
 #'@details The white noise components will be drawn independently from a centered normal distribution with standard deviation \code{sd}.
 #'
 #'@param ar_params Vector of AR parameters, which should have length \code{p}. Parameters must be numeric values.
-#'@param start_values Vector containing the \code{p} start values. 
+#'@param start_values Vector containing the \code{p} start values.
 #'@param n A length-one numeric vector specifying the length of the time series one wants to obtain. Should be greater or equal to \code{p}.
-#'@param sd Standard deviation for generating the white noise components (length-one numeric vector). 
+#'@param sd Standard deviation for generating the white noise components (length-one numeric vector).
 #'
 #'@return The value returned is an \code{AR} object, having the length and start values specified in beforehand.
 #'
@@ -71,25 +71,25 @@ setClass(
 
 AR <- function(ar_params = numeric(0),start_values=numeric(0),n=1,sd=1) {
     p <- length(ar_params)
-    
+
     stopifnot("Too many start values for requested length of the time series"=p<=n)
-    
+
     # Initializing time series with zeros
     time_series <- numeric(n)
-    
+
     # Generating white-noise components
     noise <- rnorm(n-p , 0, sd)
-    
+
     # Initializing the first p values
     time_series[1:p] <- start_values
-    
+
     # Generating further values for the AR(p) time series (in case n>p)
     if (n>p) {
         for (t in (p + 1):n) {
             time_series[t] <- sum(ar_params * rev(time_series[(t-p):(t-1)])) + noise[t-p]
         }
     }
-    
+
     new("AR",
         ar_params=ar_params,
         start_values=start_values,
@@ -100,13 +100,13 @@ AR <- function(ar_params = numeric(0),start_values=numeric(0),n=1,sd=1) {
 
 #'Constructor for MA(q) time series
 #'
-#'@description Function which can be used to generate an MA(q) time series. 
+#'@description Function which can be used to generate an MA(q) time series.
 #'
 #'@details The white noise components will be drawn independently from a centered normal distribution with standard deviation \code{sd}.
 #'
 #'@param ma_params Vector of MA parameters, which should have length \code{q}. Parameters must be numeric values.
 #'@param n A length-one numeric vector specifying the length of the time series one wants to obtain. Should be greater or equal to \code{p}.
-#'@param sd Standard deviation for generating the white noise components (length-one numeric vector). 
+#'@param sd Standard deviation for generating the white noise components (length-one numeric vector).
 #'
 #'@return The value returned is a \code{MA} object, having the length specified in beforehand.
 #'
@@ -116,18 +116,18 @@ AR <- function(ar_params = numeric(0),start_values=numeric(0),n=1,sd=1) {
 
 MA <- function(ma_params = NA_real_,sd=1,n=1) {
     q <- length(ma_params)
-    
+
     # Initializing time series with zeros
     time_series <- numeric(n)
-    
+
     # Generating white-noise components
     noise <- rnorm(n+q, 0, sd)
-    
+
     # Computing values for the time series
     for (t in 1:n) {
         time_series[t] <- sum(ma_params * rev(noise[t:(t+q-1)])) + noise[t+q]
     }
-    
+
     new("MA",
         ma_params=ma_params,
         sd=sd,
@@ -139,7 +139,7 @@ MA <- function(ma_params = NA_real_,sd=1,n=1) {
 
 setValidity("TimeSeries", function(object){
     errors <- character(0)
-    
+
     # Checking n
     if(is.na(object@n)|| length(object@n) == 0){
         errors <- c(errors,"length is not available")
@@ -162,20 +162,20 @@ setValidity("TimeSeries", function(object){
     }
     # Checking standard deviation
     if(!is.na(object@sd) && length(object@sd)!= 0){
-        
+
         if(!is.atomic(object@sd)){
             errors <- c(errors,'standard deviation is not atomic')
         }
         else if (!is.numeric(object@sd)){
             errors <- c(errors,"standard deviation is not a number")
         }
-        
+
         else if (0>object@sd){
             errors <- c(errors,"standard deviation is negative")
         }
-        
+
     }
-    
+
     # Checking data
     if( length(object@data)== 0){
         errors <- c(errors,"data is not available")
@@ -191,22 +191,22 @@ setValidity("TimeSeries", function(object){
             errors <- c(errors,"data length doesnt correspond to the saved data length")
         }
     }
-    
+
     if (length(errors)==0){
         return(TRUE)
     }
     else{
         return(errors)
     }
-}) 
+})
 
 setValidity("AR", function(object) {
     errors <- character(0)
-    
+
     if (length(object@ar_params) != length(object@start_values)) {
         errors <- c(errors,"The number of starting values does not coincide with the amount of coefficients")
-    } 
-    
+    }
+
     # Checking AR-Parameters
     if(length(object@ar_params)!=0){
         if(any(is.na(object@ar_params))){
@@ -215,9 +215,9 @@ setValidity("AR", function(object) {
         if(!is.numeric(object@ar_params)){
             errors <- c(errors,"The AR parameters are not numeric")
         }
-        
+
     }
-    
+
     # Checking start values
     if(length(object@start_values)!=0){
         if(!is.numeric(object@start_values)){
@@ -232,7 +232,7 @@ setValidity("AR", function(object) {
             }
         }
     }
-    
+
     if (length(errors)==0){
         return(TRUE)
     }
@@ -243,7 +243,7 @@ setValidity("AR", function(object) {
 
 setValidity("MA", function(object) {
     errors <- character(0)
-    
+
     # Checking MA-Parameters
     if(length(object@ma_params)!=0){
         if(any(is.na(object@ma_params))){
@@ -253,7 +253,7 @@ setValidity("MA", function(object) {
             errors <- c(errors,"the MA parameters are not numeric")
         }
     }
-    
+
     if (length(errors)==0){
         return(TRUE)
     }
@@ -264,13 +264,13 @@ setValidity("MA", function(object) {
 
 #'Resample function for a time series
 #'
-#'@description Function which can be used to resample a time series. 
+#'@description Function which can be used to resample a time series.
 #'
 #'@param ts_obj A time series, must be a \code{TimeSeries} class.
 #'
 #'@return The value returned is an \code{TimeSeries} object, having the same length, start values, parameters and standard deviation as the origin time series.
 #'
-#'@examples 
+#'@examples
 #'ar_time_series <- AR(ar_params = c(0.3, 0.7), start_values = c(1,2), n = 30, sd = 1)
 #'resample(ar_time_series)
 #'ma_time_series <- MA(ma_params = c(0.5, 0.7), n = 40, sd = 2)
@@ -288,9 +288,9 @@ setMethod(
     "resample",
     "AR",
     function(ts_obj) {
-        AR(ar_params = ts_obj@ar_params, 
-           start_values = ts_obj@start_values, 
-           n = ts_obj@n, 
+        AR(ar_params = ts_obj@ar_params,
+           start_values = ts_obj@start_values,
+           n = ts_obj@n,
            sd = ts_obj@sd)
     })
 
@@ -305,30 +305,42 @@ setMethod(
 
 #' Vector to time series
 #'
-#'@description Function which transforms a vector into a \code{TimeSeries} object. 
+#'@description Function which transforms a vector into a \code{TimeSeries} object.
 #'
-#'@param ts_obj A numeric vector.
+#'@param  vec A numeric vector.
 #'
 #'@return The value returned is an \code{TimeSeries} object, having the same length as the vector.
 #'
-#'@examples 
+#'@examples
 #'vec <- 1:10
 #'vec_to_ts(vec)
 #'
 #'@export
 
-setGeneric("vec_to_ts", 
+setGeneric("vec_to_ts",
            function(vec) standardGeneric("vec_to_ts"))
 setMethod("vec_to_ts",
-          "numeric", 
+          "numeric",
           function(vec) {
               len <- length(vec)
-              
+
               # Use the empirical standard deviation
               sd_vec <- sd(vec)
-              
+
               new("TimeSeries",
                   sd = sd_vec,
                   n = len,
                   data = vec)
           })
+
+setAs("numeric", "TimeSeries", function(from) {
+  len <- length(from)
+
+  # Use the empirical standard deviation
+  sd_vec <- sd(from)
+
+  new("TimeSeries",
+      sd = sd_vec,
+      n = len,
+      data = from)})
+
