@@ -4,7 +4,7 @@
 \name{ZeitreihenR-package}
 \alias{ZeitreihenR}
 \alias{ZeitreihenR-package}
-\title{ZeitreihenR: Package for constructing TimeSeries objects, using different algorithms and visualisations.}
+\title{ZeitreihenR: Package for constructing TimeSeries objects, using different algorithms and visualisations}
 \description{
 The package contains S4-classes as well as methods for time series and predictions for them. The definitions and methods are based on the book *Introduction to Time-Series Analysis and Forecasting* by Peter J. Brockwell and Richard A. Davis.
 }

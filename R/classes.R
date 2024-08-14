@@ -303,35 +303,6 @@ setMethod(
            sd = ts_obj@sd)
     })
 
-#' Vector to time series
-#'
-#'@description Function which transforms a vector into a \code{TimeSeries} object.
-#'
-#'@param  vec A numeric vector.
-#'
-#'@return The value returned is an \code{TimeSeries} object, having the same length as the vector.
-#'
-#'@examples
-#'vec <- 1:10
-#'vec_to_ts(vec)
-#'
-#'@export
-
-setGeneric("vec_to_ts",
-           function(vec) standardGeneric("vec_to_ts"))
-setMethod("vec_to_ts",
-          "numeric",
-          function(vec) {
-              len <- length(vec)
-
-              # Use the empirical standard deviation
-              sd_vec <- sd(vec)
-
-              new("TimeSeries",
-                  sd = sd_vec,
-                  n = len,
-                  data = vec)
-          })
 
 setAs("numeric", "TimeSeries", function(from) {
   len <- length(from)
@@ -343,4 +314,3 @@ setAs("numeric", "TimeSeries", function(from) {
       sd = sd_vec,
       n = len,
       data = from)})
-

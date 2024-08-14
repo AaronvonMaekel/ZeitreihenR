@@ -10,11 +10,11 @@ setMethod("innovations_step",
             out_len <- nrow(thetas_prev) + 1
 
             # Validity check
-            validObject(ts_obj) 
-            
+            validObject(ts_obj)
+
             # Checking for square matrix
             stopifnot("The matrix has to be a square matrix"=nrow(thetas_prev)==ncol(thetas_prev))
-            
+
             # Checking for lower triangular matrix
             if (nrow(thetas_prev) > 1){
                 for (i in 1:(nrow(thetas_prev)-1)) {
@@ -25,11 +25,11 @@ setMethod("innovations_step",
                     }
                 }
             }
-            
+
             # Checking for unallowed entries
             stopifnot("Entry in the matrix is not numeric"=is.numeric(thetas_prev))
             stopifnot("NA entry contained in matrix"=all(!is.na(thetas_prev)))
-            
+
             # Compute v's with known thetas
             if (nrow(thetas_prev)!=0){
                 for (n in 1:nrow(thetas_prev)) {
@@ -40,17 +40,17 @@ setMethod("innovations_step",
                     v <- c(v, cov - calc_sum)
                 }
             }
-            
+
             # Initialize theta matrix
             theta <- matrix(0,out_len,out_len)
             theta[1:nrow(thetas_prev), 1:ncol(thetas_prev)] <- thetas_prev
-                     
+
             acf_compl <- c(sapply(1:(ts_obj@n-1), \(x) {ACF(ts_obj, x)}), 0)
-            
+
             # Computing the new theta coefficients
             for (k in 0:(out_len-1)) {
                 if (k == 0){
-                    theta[out_len, out_len] <- acf_compl[out_len] / v[1] 
+                    theta[out_len, out_len] <- acf_compl[out_len] / v[1]
                 } else {
                     sum_thetas <- 0
                     for (j in 0:(k-1)) {
@@ -58,7 +58,7 @@ setMethod("innovations_step",
                     }
                     # Filling in the values
                     theta[out_len,out_len-k] <- 1/v[k+1] * (acf_compl[out_len-k] - sum_thetas)
-                }     
+                }
             }
             # Returning updated matrix, which has one additional row and column
             return(theta)
@@ -67,7 +67,7 @@ setMethod("innovations_step",
 
 #'Predictor based on the \code{Innovations} algorithm
 #'
-#'@description Takes a \code{TimeSeries} object and predicts a specified amount of steps. Computations are based on the \code{Innovations} algorithm. 
+#'@description Takes a \code{TimeSeries} object and predicts a specified amount of steps. Computations are based on the \code{Innovations} algorithm.
 #'
 #'@details This algorithm utilizes the sample autocovariance function \code{ACF} as estimator for the autocovariance.
 #'
@@ -87,25 +87,25 @@ setGeneric("innovations_predictor",
 setMethod("innovations_predictor",
           "TimeSeries",
           function (ts_obj, pred_len = 1, entire_ts = TRUE){
-    
+
             # Checking whether pred_len and entire_ts are specified properly
             stopifnot("entire_ts not logical"=is.logical(entire_ts))
             stopifnot("pred_len not numeric"=is.numeric(pred_len))
             stopifnot("pred_len must be greater or equal to 1"=pred_len>=1)
             stopifnot("pred_len not applicable"=pred_len%%1==0)
-            
+
             # Validity Check
-            validObject(ts_obj) 
-            
+            validObject(ts_obj)
+
             # Initial computation of theta matrix, needed for computing X_hats
             thetas <- innovations_step(ts_obj)
             for (n in 3:(ts_obj@n-1)){
                 thetas <- innovations_step(ts_obj, thetas_prev = thetas)
             }
-            
+
             X_hat <- 0
             len <- ts_obj@n
-            
+
             # Compute X_hat_1 until X_hat_n
             for (n in 1:(len-1)){
                 X <- ts_obj@data[1:n]
@@ -113,7 +113,7 @@ setMethod("innovations_predictor",
                 new_X <- sum(theta_calc * rev(X - X_hat))
                 X_hat <- c(X_hat, new_X)
             }
-            
+
             # Compute predictions
             for (h in 1:pred_len){
                 # Update theta matrix one step
@@ -127,13 +127,13 @@ setMethod("innovations_predictor",
                 ts_obj@data <- c(ts_obj@data, pre)
                 ts_obj@n <- ts_obj@n + 1
             }
-            
+
             # Produce output according to entire_ts
             if(entire_ts){
                 vec <- ts_obj@data
-                return(vec_to_ts(vec))
+                return(as(vec,"TimeSeries"))
             } else {
                 vec <- ts_obj@data[(len+1):ts_obj@n]
-                return(vec_to_ts(vec))
+                return(as(vec,"TimeSeries"))
             }
 })

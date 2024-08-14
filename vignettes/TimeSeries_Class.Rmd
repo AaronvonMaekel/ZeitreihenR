@@ -77,11 +77,11 @@ plot_timeseries(ma1)
 plot_timeseries(resample(ma1))
 ```
 
-### Vector to time series
-The Vector to time series function *vec_to_ts* transforms a vector into a TimeSeries object. 
+### Custom conversion to time series
+We overloaded the as() function to accomodate for conversions to the TimeSeries object. 
 It takes a numeric vector and returns a TimeSeries object, having the same length as the vector.
 ```{r}
 vec <- 1:10
-vects <- vec_to_ts(vec)
+vects <- as(vec,"TimeSeries")
 plot_timeseries(vects)
 ```

@@ -80,10 +80,10 @@ setMethod("DL_predictor",
 
             # Producing output according to the specification made by entire_ts
             if (entire_ts==TRUE){
-                return(vec_to_ts(vec))
+                return(as(vec,"TimeSeries"))
             } else {
                 vec <- vec[(in_len + 1):(in_len + pred_len)]
-                return(vec_to_ts(vec))
+                return(as(vec,"TimeSeries"))
             }
 }
 )
