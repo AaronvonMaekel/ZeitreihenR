@@ -1,7 +1,5 @@
 #'Sample autocovariance function
 #'
-#'@importClassesFrom TimeSeriesR TimeSeries
-#'
 #'@description This function takes a \code{TimeSeries} object and computes the sample autocovariance function of the data.
 #'
 #'@param ts_obj A time series, which must be a \code{TimeSeries} class.
