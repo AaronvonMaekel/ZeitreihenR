@@ -19,4 +19,45 @@ library(ZeitreihenR)
 library(ggplot2)
 library(tibble)
 ```
-Test123
+
+## Introduction
+
+In this vignette, we will explain the functions of the **TimeSeries** package in R. The package contains S4-classes as well as methods for time series and predictions for them. The definitions and methods are based on the book *Introduction to Time-Series Analysis and Forecasting* by Peter J. Brockwell and Richard A. Davis.
+
+-   S4-class **TimeSeries** with slots standard deviation, length of object and data
+
+-   Child-classes **AR TimeSeries** and **MA TimeSeries**
+
+-   Generators for AR and MA TimeSeries **AR** and **MA**
+
+-   **Resample** function for sampling a time series
+
+-   Vector to time series function **vec_to_ts** which transforms a vector to a time series
+
+### TimeSeries class
+
+A *time series* is a set of observations $x_t$, each one being recorded at a specific time $t$. A time series model for the observed data $x_t$ is a specification of the joint distributions (or possibly only the means and covariances) of a sequence of random variables $X_t$ of which $x_t$ is postulated to be a realization.
+
+### AR TimeSeries and generator
+
+A *AR(p) Process* is a stochastical process which is described by the following model: $X_t$ is an autoregressive process of order $p$ if $X_t = \theta_1 X_{t-1}+...+\theta_p X_{t-p} + Z_t$, where $Z_t \sim \text{WN}(0,\sigma^2)$ and $\theta_1,...,\theta_q$ are constants. We call $Z_t$ white noise and assume that the white noise components are drawn independently from a centered normal distribution with standard deviation *sd*. The function *AR* is a method for the TimeSeries class and generates an AR(p) time series.
+
+#### Example for AR TimeSeries
+
+We start with an example for an AR(2) time series, where we have two parameters and 2 start values.
+
+```{r setup}
+ar1 <- AR(ar_params = c(0.3, 0.7), start_values = c(1,2), n = 30, sd = 1) 
+plot_timeseries(ar1) 
+```
+
+### MA TimeSeries and generator
+
+A *MA(q) Process* is a stochastical process which is described by the following model: $X_t$ is a moving-average process of order $q$ if $X_t =Z_t +\theta_1Z_{t−1} +···+\theta_q Z_{t−q}$, where $Z_t \sim \text{WN}(0,\sigma^2)$ and $\theta_1,...,\theta_q$ are constants. We call $Z_t$ white noise and assume that the white noise components are drawn independently from a centered normal distribution with standard deviation *sd*. The function *AR* is a method for the TimeSeries class and generates an AR(p) time series.
+
+#### Example for MA TimeSeries
+
+```{r setup}
+ma1 <- MA(ma_params = c(0.3,0.7), n=30, sd=1)
+plot_timeseries(ma1)
+```
