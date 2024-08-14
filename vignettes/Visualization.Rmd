@@ -1,0 +1,67 @@
+---
+title: "Visualizations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Visualizations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ZeitreihenR)
+library(ggplot2)
+library(tibble)
+```
+
+## Introduction
+
+In this vignette we provide an overview over the visualization methods provided in the **TimeSeries** package.
+
+-   *plot_timeseries* method to visualize a TimeSeries object
+
+-   *plot_periodogram* method to visualize the periodogram of a TimeSeries object
+
+### Plots of Timeseries
+
+The *plot_timeseries* method provides plots for a given time series. Additionally, it can also include predictions of a time series, such as made by the *Durbin Levinson* or the *Innovations* algorithm.
+
+#### Examples for timeseries plots
+
+We start with an example of an AR TimeSeries without prediction.
+
+```{r}
+ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n = 100)
+plot_timeseries(ar_time_series)
+```
+
+In order to plot a time series with prediction, one must first use one of the prediction algorithms and then use the plot_timeseries function with the additional argument *prd*:
+
+```{r}
+ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n = 100)
+plot_timeseries(ar_time_series)
+ar_pred <- DL_predictor(ar_time_series, pred_len=10, entire_ts = FALSE)
+plot_timeseries(ar_time_series, prd=ar_pred)
+
+```
+
+### Plots of Periodogram
+
+The *plot_periodogram* method provides plots of the periodogram of a given time series.
+
+#### Examples for periodogram plots
+
+In order to plot a periodogram, one simply puts a TimeSeries object into the *plot_periodogram* function, as in the following example:
+
+```{r}
+ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n = 100)
+plot_periodogram(ar_time_series)
+ma_time_series <- MA(ma_params = c(1,-0.9), n = 100)
+plot_periodogram(ma_time_series)
+```
