@@ -9,7 +9,15 @@
 What the package does (one paragraph).
 }
 \author{
-\strong{Maintainer}: First Last \email{first.last@example.com} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
+\strong{Maintainer}: Aaron Mäkel \email{cv234@stud.uni-heidelberg.de}
+
+Authors:
+\itemize{
+  \item Eivind Hjertholm \email{xxx@stud.uni-heidelberg.de}
+  \item Victoria Mezger \email{victoria.mezger@stud.uni-heidelberg.de}
+  \item Julia Renner \email{xxx@stud.uni-heidelberg.de}
+  \item Klaus Stier \email{xxx@stud.uni-heidelberg.de}
+}
 
 }
 \keyword{internal}
