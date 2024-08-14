@@ -24,6 +24,6 @@ This algorithm utilizes the sample autocovariance function \code{ACF} as estimat
 }
 \examples{
 ar_ts <- AR(ar_params = 0.5, start_values = 1, n = 50, sd = 1)
-dl_predictor(ar_ts, pred_len=5, entire_ts = FALSE)
+DL_predictor(ar_ts, pred_len=5, entire_ts = FALSE)
 
 }
