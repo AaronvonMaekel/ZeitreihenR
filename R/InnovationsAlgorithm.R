@@ -1,11 +1,11 @@
 setGeneric("innovations_step",
-           function(ts_obj, thetas_prev = matrix(ACF(ts_obj, 1)/ACF(ts_obj, 0))) standardGeneric("innovations_step"))
+           function(ts_obj, thetas_prev = matrix(sampleACVF(ts_obj, 1)/sampleACVF(ts_obj, 0))) standardGeneric("innovations_step"))
 
 setMethod("innovations_step",
           "TimeSeries",
-          function(ts_obj, thetas_prev = matrix(ACF(ts_obj, 1)/ACF(ts_obj, 0))) {
+          function(ts_obj, thetas_prev = matrix(sampleACVF(ts_obj, 1)/sampleACVF(ts_obj, 0))) {
             len <- ts_obj@n
-            cov <- ACF(ts_obj,0)
+            cov <- sampleACVF(ts_obj,0)
             v <- cov
             out_len <- nrow(thetas_prev) + 1
 
@@ -45,7 +45,7 @@ setMethod("innovations_step",
             theta <- matrix(0,out_len,out_len)
             theta[1:nrow(thetas_prev), 1:ncol(thetas_prev)] <- thetas_prev
 
-            acf_compl <- c(sapply(1:(ts_obj@n-1), \(x) {ACF(ts_obj, x)}), 0)
+            acf_compl <- c(sapply(1:(ts_obj@n-1), \(x) {sampleACVF(ts_obj, x)}), 0)
 
             # Computing the new theta coefficients
             for (k in 0:(out_len-1)) {

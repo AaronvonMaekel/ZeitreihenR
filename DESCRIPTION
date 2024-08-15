@@ -24,7 +24,7 @@ VignetteBuilder: knitr
 Collate:
   ZeitreihenR-package.R
   classes.R
-  AutoCovarianceFunction.R
+  SampleAutoCovarianceFunction.R
   DurbinLevinson.R
   InnovationsAlgorithm.R
   Periodogram.R

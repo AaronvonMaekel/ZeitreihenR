@@ -11,18 +11,18 @@ setMethod("DLA",
             max_n <- ts_obj@n
 
             # Computing the ACF values
-            acf_compl <- c(sapply(1:(max_n-1), \(x) {ACF(ts_obj, x)}), 0)
+            acf_compl <- c(sapply(1:(max_n-1), \(x) {sampleACVF(ts_obj, x)}), 0)
 
             # Compute coefficients
             for (n in 1:max_n) {
                if (n == 1) {
                    # Initialization
-                   phi <- ACF(ts_obj, 1) / ACF(ts_obj, 0)
+                   phi <- sampleACVF(ts_obj, 1) / sampleACVF(ts_obj, 0)
                    phi_n <- phi
-                   nu <- ACF(ts_obj, 0) * (1 - phi^2)
+                   nu <- sampleACVF(ts_obj, 0) * (1 - phi^2)
               } else {
                     # Recursive computation
-                    val <- sapply(1:(n-1), \(j) {ACF(ts_obj, n-j) * phi[j]})
+                    val <- sapply(1:(n-1), \(j) {sampleACVF(ts_obj, n-j) * phi[j]})
 
                     # Update values of phi and nu
                     phi_n <- (1/nu) * (acf_compl[n] - sum(val))
@@ -38,7 +38,7 @@ setMethod("DLA",
 #'
 #'@description Takes a \code{TimeSeries} object and predicts a specified amount of steps. Computations are based on the \code{Durbin-Levinson} algorithm.
 #'
-#'@details This algorithm utilizes the sample autocovariance function \code{ACF} as estimator for the autocovariance.
+#'@details This algorithm utilizes the sample autocovariance function \code{sampleACF} as estimator for the autocovariance.
 #'
 #'@param ts_obj A stationary time series, must be a \code{TimeSeries} class.
 #'@param pred_len Number of steps one wants to predict.

@@ -61,6 +61,62 @@ plot_timeseries <- function(ts_obj, prd = NULL) {
     plt
 }
 
+
+#'Plotting the SACVF or SACF
+#'
+#'@description The function plots the SACVF/SACF of a given time series.
+#'
+#'@param ts_obj A time series, must be a \code{TimeSeries} class.
+#'@param acf logical. Plots the SACVF if FALSE, SACF otherwise .
+#'@param max_lag maximum lag at which to calculate the SACVF/SACF .
+#'
+#'@return The return value is a plot of the SACF/SACVF of a time series.
+#'
+#'@examples
+#'ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n = 100)
+#'plot_SACVF(ar_time_series,acf=FALSE,max_lag=20)
+#'
+#'@export
+
+plot_SACVF <- function(ts_obj,acf=FALSE,max_lag=NULL) {
+
+  # Validity check
+  validObject(ts_obj)
+
+  if(is.null(max_lag)){
+    max_lag <- ts_obj@n-1
+  }
+
+  # Extract data
+  timeseries <- ts_obj@data
+  sacvf <- sapply(0:max_lag,function(x){
+    return(sampleACVF(ts_obj,x))
+  })
+
+  # Plot of periodogram
+  if(acf){
+    sacf <- sacvf / sacvf[1 ]
+    tibble2plot <- tibble::tibble(SACF = sacf, Lag = (0:max_lag))
+    plt_base <- ggplot2::ggplot(data = tibble2plot, mapping = ggplot2::aes(x = Lag, y = SACF))
+    labs <- ggplot2::ggtitle("SACF")
+  }
+  else{
+    tibble2plot <- tibble::tibble(SACVF = sacvf, Lag = (0:max_lag))
+    plt_base <- ggplot2::ggplot(data = tibble2plot, mapping = ggplot2::aes(x = Lag, y = SACVF))
+    labs <- ggplot2::ggtitle("SACVF")
+    }
+
+  lay <- ggplot2::geom_line(color = "purple")
+  point <- ggplot2::geom_point(color = "royalblue")
+
+  plt <- plt_base + lay + point + labs + ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 15))
+  plt
+}
+
+
+
+
+
 #'Plot function for the periodogram
 #'
 #'@description The function plots the periodogram of a given time series.

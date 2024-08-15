@@ -77,11 +77,20 @@ plot_timeseries(ma1)
 plot_timeseries(resample(ma1))
 ```
 
-### Custom conversion to time series
+### Helper Functions
+#### Custom conversion to time series
 We overloaded the as() function to accomodate for conversions to the TimeSeries object. 
 It takes a numeric vector and returns a TimeSeries object, having the same length as the vector.
 ```{r}
 vec <- 1:10
 vects <- as(vec,"TimeSeries")
 plot_timeseries(vects)
+```
+
+#### Displaying a time series
+
+We also overloaded the show() function to display the general features of a TimeSeries object. 
+```{r}
+ma1 <- MA(ma_params = c(0.5, 0.7), n = 30, sd = 1)
+show(ma1)
 ```

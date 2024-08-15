@@ -24,27 +24,27 @@ library(tibble)
 
 In this vignette, we will explain the algorithms of the **TimeSeries** package in R. The algorithms are used to analyse time series and make predictions and are based on the book *Introduction to Time-Series Analysis and Forecasting* by Peter J. Brockwell and Richard A. Davis. This vignette contains examples and explanations for the following methods:
 
--   Auto Covariance Function **ACF**
+-   Auto Covariance Function **sampleACVF**
 -   Durbin Levinson Algorithm **DLA** and the algorithm with predictions **DL_predictions**
 -   Innovations Algorithm **innovations_step** and the algorithm with predictions **innovations_predictor**
 -   Periodogram for time series **periodogram**
 
 ### Auto Covariance Function
 
-The auto covariance function is a function which describes the dependencies between a time series at a time difference h: (TODO: bessere beschreibung einsetzen ) Let $X_t$ be a stationary time series. The *autocovariance function (ACVF)* of $X_t$ at lag h is $$\gamma_X(h) = Cov(X_t+h, X_t)$$. This function however only works if the underlying model is known. For that reason, we will work with the following sample autocovariance function, that uses the data: The *sample autocovariance function* is $$\hat{\gamma}(h) = \frac{1}{n}\sum_{t=1}^{n-|h|}(x_{t+|h|}-\bar{x})(x_t-\bar{x}), -n < h < n$$. The *ACF* is a realization of the definition and computes the sample autocovariance function of a time series at a given point of time.
+The auto covariance function is a function which describes the dependencies between a time series at a time difference h: (TODO: bessere beschreibung einsetzen ) Let $X_t$ be a stationary time series. The *autocovariance function (ACVF)* of $X_t$ at lag h is $$\gamma_X(h) = Cov(X_t+h, X_t)$$. This function however only works if the underlying model is known. For that reason, we will work with the following sample autocovariance function, that uses the data: The *sample autocovariance function* is $$\hat{\gamma}(h) = \frac{1}{n}\sum_{t=1}^{n-|h|}(x_{t+|h|}-\bar{x})(x_t-\bar{x}), -n < h < n$$. The *SACVF* is a realization of the definition and computes the sample autocovariance function of a time series at a given point of time.
 
-#### Example ACF
+#### Example SACVF
 
 Consider a time series ar_ts with parameter 0.5 and start value 1.
 
 TODO: acf hier veranschaulichen
+
 ```{r}
 ar_ts <- AR(ar_params = 0.5, start_values = 1, n = 50, sd = 1)
 plot_timeseries(ar_ts)
-ACF(ar_ts,0)
+plot_SACVF(ar_ts)
 
 ```
-
 
 ### Durbin Levinson Algorithm
 
@@ -78,10 +78,10 @@ plot_timeseries(ma_pred)
 
 ### Periodogram
 
-The periodogram of a time series is a estimator of the spectral density of the time series. For a time series $X_1,...X_n$ it is defined as: $$ I_n(\lambda)=\frac{1}{n} \Bigg\| \sum \limits\*{t=1}^{n}x\_{t}e^{-it\*\lambda} \Bigg\| \^2 $$ where $x_t$ is a combination of trigonometric functions containing Fourier frequencies. 
-The *periodogram* method is a implementation of the periodogram algorithm in Definition 4.2.1 of the book *Introduction to Time-Series Analysis and Forecasting* by Peter J. Brockwell and Richard A. Davis. It takes a TimeSeries object and returns the Fourier-frequencies as well as the estimated spectral density values. 
+The periodogram of a time series is a estimator of the spectral density of the time series. For a time series $X_1,...X_n$ it is defined as: $$ I_n(\lambda)=\frac{1}{n} \Bigg\| \sum \limits\*{t=1}^{n}x\_{t}e^{-it\*\lambda} \Bigg\| \^2 $$ where $x_t$ is a combination of trigonometric functions containing Fourier frequencies. The *periodogram* method is a implementation of the periodogram algorithm in Definition 4.2.1 of the book *Introduction to Time-Series Analysis and Forecasting* by Peter J. Brockwell and Richard A. Davis. It takes a TimeSeries object and returns the Fourier-frequencies as well as the estimated spectral density values.
 
 ### Example periodogram
+
 ```{r}
 ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n = 100)
 periodogram(ar_time_series)

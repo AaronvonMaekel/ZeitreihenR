@@ -314,3 +314,20 @@ setAs("numeric", "TimeSeries", function(from) {
       sd = sd_vec,
       n = len,
       data = from)})
+
+setMethod("show", "TimeSeries",
+          function(object){
+            header <- "Time series"
+
+            if (is(object,"AR")){
+              header <- paste0("AR(",length(object@ar_params),")-",header)
+            }
+            else if (is(object,"MA")){
+              header <- paste0("MA(",length(object@ma_params),")-",header)
+            }
+            cat(header, "with length",object@n,"\n")
+            print(object@data)
+
+            })
+
+

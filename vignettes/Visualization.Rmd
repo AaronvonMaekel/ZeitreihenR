@@ -26,6 +26,8 @@ In this vignette we provide an overview over the visualization methods provided 
 
 -   *plot_timeseries* method to visualize a TimeSeries object
 
+-   *plot_SACVF* method to visualize the SACVF or SACF of a TimeSeries object
+
 -   *plot_periodogram* method to visualize the periodogram of a TimeSeries object
 
 ### Plots of Timeseries
@@ -50,6 +52,26 @@ ar_pred <- DL_predictor(ar_time_series, pred_len=10, entire_ts = FALSE)
 plot_timeseries(ar_time_series, prd=ar_pred)
 
 ```
+### Plots of SACVF/SACF
+
+The *plot_SACVF* method provides SACVF/SACF for a given time series. 
+
+#### Examples for timeseries plots
+
+We start with an example of the SACVF of an AR TimeSeries.
+
+```{r}
+ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n = 100)
+plot_SACVF(ar_time_series,max_lag=25,acf=FALSE)
+```
+
+The argument *max_lag* defines the maximum lag up to which we will compute the functions. The logical argument *acf* defines if we want to plot the SACF instead of the SACVF:
+
+```{r}
+ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n = 100)
+plot_SACVF(ar_time_series,max_lag=25,acf=TRUE)
+```
+
 
 ### Plots of Periodogram
 
@@ -65,3 +87,6 @@ plot_periodogram(ar_time_series)
 ma_time_series <- MA(ma_params = c(1,-0.9), n = 100)
 plot_periodogram(ma_time_series)
 ```
+
+### Composition Plots,(TODO wochenende)
+
