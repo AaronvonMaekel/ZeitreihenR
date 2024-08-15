@@ -4,7 +4,7 @@
 \alias{AR}
 \title{Constructor for AR(p) time series}
 \usage{
-AR(ar_params = numeric(0), start_values = numeric(0), n = 1, sd = 1)
+AR(ar_params, start_values, n, sd = 1)
 }
 \arguments{
 \item{ar_params}{Vector of AR parameters, which should have length \code{p}. Parameters must be numeric values.}

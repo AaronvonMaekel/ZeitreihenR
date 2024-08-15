@@ -69,7 +69,7 @@ setClass(
 #'
 #'@export
 
-AR <- function(ar_params = numeric(0),start_values=numeric(0),n=1,sd=1) {
+AR <- function(ar_params,start_values,n,sd=1) {
     p <- length(ar_params)
 
     stopifnot("Too many start values for requested length of the time series"=p<=n)
@@ -114,7 +114,7 @@ AR <- function(ar_params = numeric(0),start_values=numeric(0),n=1,sd=1) {
 #'
 #'@export
 
-MA <- function(ma_params = NA_real_,sd=1,n=1) {
+MA <- function(ma_params,n,sd=1 ) {
     q <- length(ma_params)
 
     # Initializing time series with zeros
@@ -141,53 +141,42 @@ setValidity("TimeSeries", function(object){
     errors <- character(0)
 
     # Checking n
-    if(is.na(object@n)|| length(object@n) == 0){
+    if(is.na(object@n[1])|| length(object@n) == 0){
         errors <- c(errors,"length is not available")
     }
     else{
-        if (!is.atomic(object@n)){
-            errors <- c(errors,"length is not atomic")
-        }
-        else if (!is.numeric(object@n)){
-            errors <- c(errors,"length is not a numeric value")
+        if (length(object@n) > 1){
+            errors <- c(errors,"length is not a single value")
         }
         else{
-            if (0>object@n){
+            if (0>object@n[1]){
                 errors <- c(errors,"length is not a positive number")
             }
-            if (!object@n %% 1 == 0){
+            if (!object@n[1] %% 1 == 0){
                 errors <- c(errors,"length is not a integer")
             }
         }
     }
     # Checking standard deviation
-    if(!is.na(object@sd) && length(object@sd)!= 0){
-
-        if(!is.atomic(object@sd)){
-            errors <- c(errors,'standard deviation is not atomic')
-        }
-        else if (!is.numeric(object@sd)){
-            errors <- c(errors,"standard deviation is not a number")
-        }
-
-        else if (0>object@sd){
+    if(length(object@sd)>1){
+      errors <- c(errors,'standard deviation is not a single value')
+    }
+    else{
+      if(!is.na(object@sd) && length(object@sd)!= 0){
+        if (0>object@sd){
             errors <- c(errors,"standard deviation is negative")
         }
-
+      }
     }
-
     # Checking data
     if( length(object@data)== 0){
         errors <- c(errors,"data is not available")
-    }
-    else if (!is.numeric(object@data)){
-        errors <- c(errors,"data is not a numeric vector")
     }
     else{
         if(any(is.na(object@data))){
             errors <- c(errors,"data has missing values")
         }
-        if(object@n!=length(object@data)){
+        if(object@n[1]!=length(object@data)){
             errors <- c(errors,"data length doesnt correspond to the saved data length")
         }
     }
@@ -212,25 +201,22 @@ setValidity("AR", function(object) {
         if(any(is.na(object@ar_params))){
             errors <- c(errors,"There are missing AR parameters")
         }
-        if(!is.numeric(object@ar_params)){
-            errors <- c(errors,"The AR parameters are not numeric")
-        }
-
+    }
+    else{
+      errors <- c(errors,"There are no AR parameters")
     }
 
     # Checking start values
     if(length(object@start_values)!=0){
-        if(!is.numeric(object@start_values)){
-            errors <- c(errors,"The start values are not numeric")
-        }
-        else{
-            if( any(is.na(object@start_values))){
+        if( any(is.na(object@start_values))){
                 errors <- c(errors,"There are missing start values")
-            }
-            if( any(object@data[1:length(object@start_values)]!=object@start_values)){
-                errors <- c(errors,"The start of the time series differs from the start values")
-            }
         }
+        if( any(object@data[1:length(object@start_values)]!=object@start_values)){
+                errors <- c(errors,"The start of the time series differs from the start values")
+        }
+
+    }else{
+      errors <- c(errors,"There are no Start Values")
     }
 
     if (length(errors)==0){
@@ -249,9 +235,8 @@ setValidity("MA", function(object) {
         if(any(is.na(object@ma_params))){
             errors <- c(errors,"there are missing MA parameters")
         }
-        if(!is.numeric(object@ma_params)){
-            errors <- c(errors,"the MA parameters are not numeric")
-        }
+    }else{
+      errors <- c(errors,"There are no MA parameters")
     }
 
     if (length(errors)==0){
@@ -317,6 +302,7 @@ setAs("numeric", "TimeSeries", function(from) {
 
 setMethod("show", "TimeSeries",
           function(object){
+            validObject(object)
             header <- "Time series"
 
             if (is(object,"AR")){

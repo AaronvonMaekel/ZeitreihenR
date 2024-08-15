@@ -91,6 +91,10 @@ plot_timeseries(vects)
 
 We also overloaded the show() function to display the general features of a TimeSeries object. 
 ```{r}
+vec <- 1:10
+vec_ts <- as(vec,"TimeSeries")
+show(vec_ts)
 ma1 <- MA(ma_params = c(0.5, 0.7), n = 30, sd = 1)
 show(ma1)
+
 ```

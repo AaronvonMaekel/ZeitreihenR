@@ -4,14 +4,14 @@
 \alias{MA}
 \title{Constructor for MA(q) time series}
 \usage{
-MA(ma_params = NA_real_, sd = 1, n = 1)
+MA(ma_params, n, sd = 1)
 }
 \arguments{
 \item{ma_params}{Vector of MA parameters, which should have length \code{q}. Parameters must be numeric values.}
 
-\item{sd}{Standard deviation for generating the white noise components (length-one numeric vector).}
-
 \item{n}{A length-one numeric vector specifying the length of the time series one wants to obtain. Should be greater or equal to \code{p}.}
+
+\item{sd}{Standard deviation for generating the white noise components (length-one numeric vector).}
 }
 \value{
 The value returned is a \code{MA} object, having the length specified in beforehand.
