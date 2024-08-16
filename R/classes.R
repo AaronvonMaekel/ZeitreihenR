@@ -249,26 +249,31 @@ setValidity("MA", function(object) {
 
 #'Resample function for a time series
 #'
+#'
 #'@description Function which can be used to resample a time series.
 #'
 #'@param ts_obj A time series, must be a \code{TimeSeries} class.
 #'
 #'@return The value returned is an \code{TimeSeries} object, having the same length, start values, parameters and standard deviation as the origin time series.
 #'
+#'@export
+#'@docType methods
+#'@rdname resample-methods
+#'
 #'@examples
 #'ar_time_series <- AR(ar_params = c(0.3, 0.7), start_values = c(1,2), n = 30, sd = 1)
 #'resample(ar_time_series)
 #'ma_time_series <- MA(ma_params = c(0.5, 0.7), n = 40, sd = 2)
 #'resample(ma_time_series)
-#'
-#'@export
-
 setGeneric(
     name = "resample",
     def = function(ts_obj) {
         standardGeneric("resample")
     })
 
+
+#' @rdname resample-methods
+#' @aliases resample,AR
 setMethod(
     "resample",
     "AR",
@@ -279,6 +284,8 @@ setMethod(
            sd = ts_obj@sd)
     })
 
+#' @rdname resample-methods
+#' @aliases resample,MA
 setMethod(
     "resample",
     "MA",

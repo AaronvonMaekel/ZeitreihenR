@@ -16,7 +16,8 @@ Imports:
     methods,
     tibble,
     ggplot2,
-    stats
+    stats,
+    patchwork
 Suggests: 
     knitr,
     rmarkdown

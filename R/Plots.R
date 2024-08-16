@@ -15,6 +15,7 @@
 
 plot_timeseries <- function(ts_obj, prd = NULL) {
     # Validity check
+    stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
     validObject(ts_obj)
 
     # Extract data
@@ -81,6 +82,7 @@ plot_timeseries <- function(ts_obj, prd = NULL) {
 plot_SACVF <- function(ts_obj,acf=FALSE,max_lag=NULL) {
 
   # Validity check
+  stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
   validObject(ts_obj)
 
   if(is.null(max_lag)){
@@ -113,6 +115,26 @@ plot_SACVF <- function(ts_obj,acf=FALSE,max_lag=NULL) {
   plt
 }
 
+#' spectral density plotting for AR/MA time serie
+#'
+#'@description The function plots the spectral density of a given AR/MA-time series.
+#'
+#'@param ts_obj A time series, must be a \code{AR} or \code{MA} class.
+#'
+#'@return The return value is a plot of the spectral_density of a time series.
+#'
+#'@examples
+#'ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n = 100)
+#'plot_spectral_density(ar_time_series)
+#'ar_time_series_2 <- AR(ar_params = c(1,-0.9), n = 100, start_values = c(1,0.1))
+#'plot_spectral_density(ar_time_series_2)
+#'
+#'@export
+
+plot_spectral_density <- function(ts_obj) {
+  plot_periodogram(ts_obj) #filler,pls delete and add the real stuff
+  #TODO
+}
 
 
 
@@ -136,6 +158,7 @@ plot_SACVF <- function(ts_obj,acf=FALSE,max_lag=NULL) {
 plot_periodogram <- function(ts_obj) {
 
     # Validity check
+    stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
     validObject(ts_obj)
 
     # Extract data
@@ -153,9 +176,46 @@ plot_periodogram <- function(ts_obj) {
     # Plot of periodogram
     tibble2plot <- tibble::tibble(Spectrum = data, FourierFrequency = freq)
     plt_base <- ggplot2::ggplot(data = tibble2plot, mapping = ggplot2::aes(x = FourierFrequency, y = Spectrum))
-    lay <- ggplot2::geom_line(color = "purple")
+    lay <-  ggplot2::geom_line(color = "purple")
     point <- ggplot2::geom_point(color = "royalblue")
     labs <- ggplot2::ggtitle("Periodogram")
     plt <- plt_base + lay + point + labs + ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 15))
     plt
 }
+#'TimeSeries Overview
+#'
+#'@description The function plots a the timeseries, its SACVF, spectral density(if available) and periodogram.
+#'
+#'@param ts_obj A time series, must be a \code{TimeSeries} class.
+#'
+#'@return The return value is a composition plot consisting of three or four plots (depending on the availability of the spectral density).
+#'
+#'@examples
+#'ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n = 100)
+#'plot_periodogram(ar_time_series)
+#'ar_time_series_2 <- AR(ar_params = c(1,-0.9), n = 100, start_values = c(1,0.1))
+#'plot_periodogram(ar_time_series_2)
+#'
+#'@export
+plot_ts_overview <- function(ts_obj){
+  plt1 <- plot_timeseries(ts_obj)
+  plt2 <- plot_SACVF(ts_obj)
+  plt4 <- plot_periodogram(ts_obj)
+  if(is(ts_obj,"AR") ||is(ts_obj,"MA")){
+      plt3 <- plot_spectral_density(ts_obj)
+      (plt1 + plt2) /( plt3 + plt4)
+  }
+  else{
+    #(plt1 + plt2) / plt4
+    layout <- "AABB
+                AABB
+                #CC#
+                #CC#"
+    plt1 + plt2 + plt4 +
+    plot_layout(design = layout)
+
+  }
+
+}
+
+

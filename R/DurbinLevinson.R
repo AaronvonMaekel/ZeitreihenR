@@ -1,10 +1,8 @@
 
-setGeneric("DLA",
-           function(ts_obj) standardGeneric("DLA"))
-setMethod("DLA",
-          "TimeSeries",
-          function(ts_obj){
-            # Check if ts_obj is valid
+DLA <- function(ts_obj){
+
+            # Validity Check
+            stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
             validObject(ts_obj)
 
             # Save number of values in time series
@@ -32,7 +30,7 @@ setMethod("DLA",
                 }
             }
             return(phi)
-})
+}
 
 #'Predictor based on the \code{Durbin-Levinson} algorithm
 #'
@@ -52,14 +50,10 @@ setMethod("DLA",
 #'
 #'@export
 
-# Predictor based on the DL algorithm
-setGeneric("DL_predictor",
-           function(ts_obj, pred_len=1, entire_ts = TRUE) standardGeneric("DL_predictor"))
-setMethod("DL_predictor",
-          "TimeSeries",
-          function(ts_obj, pred_len=1, entire_ts = TRUE){
+DL_predictor <- function(ts_obj, pred_len=1, entire_ts = TRUE){
 
-            # Checking validity
+            # Validity Check
+            stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
             validObject(ts_obj)
             stopifnot("Prediction length should be greater or equal to 1" =  pred_len >= 1)
             stopifnot("Entered preditcion length not compatible" = length(pred_len) == 1)
@@ -86,4 +80,4 @@ setMethod("DL_predictor",
                 return(as(vec,"TimeSeries"))
             }
 }
-)
+

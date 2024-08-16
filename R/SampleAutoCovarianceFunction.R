@@ -13,11 +13,9 @@
 #'
 #'@export
 
-setGeneric("sampleACVF",
-           function(ts_obj,h) standardGeneric("sampleACVF"))
-setMethod("sampleACVF",
-          "TimeSeries", function(ts_obj,h){
+sampleACVF <- function(ts_obj,h){
               # Validity checks
+              stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
               validObject(ts_obj)
               stopifnot("Index is not atomic"=is.atomic(h))
               stopifnot("Index is not of type numeric"=is.numeric(h))
@@ -30,7 +28,7 @@ setMethod("sampleACVF",
 
               summe <-  (1/n) * (ts[(1+abs(h)):n]-smpl_mean) %*% (ts[1:(n-abs(h))]-smpl_mean)
               return(summe[1][1])
-          })
+          }
 
 
 

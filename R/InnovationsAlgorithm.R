@@ -1,16 +1,14 @@
-setGeneric("innovations_step",
-           function(ts_obj, thetas_prev = matrix(sampleACVF(ts_obj, 1)/sampleACVF(ts_obj, 0))) standardGeneric("innovations_step"))
+innovations_step <- function(ts_obj, thetas_prev = matrix(sampleACVF(ts_obj, 1)/sampleACVF(ts_obj, 0))) {
+            # Validity check
+            stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
+            validObject(ts_obj)
 
-setMethod("innovations_step",
-          "TimeSeries",
-          function(ts_obj, thetas_prev = matrix(sampleACVF(ts_obj, 1)/sampleACVF(ts_obj, 0))) {
             len <- ts_obj@n
             cov <- sampleACVF(ts_obj,0)
             v <- cov
             out_len <- nrow(thetas_prev) + 1
 
-            # Validity check
-            validObject(ts_obj)
+
 
             # Checking for square matrix
             stopifnot("The matrix has to be a square matrix"=nrow(thetas_prev)==ncol(thetas_prev))
@@ -63,7 +61,7 @@ setMethod("innovations_step",
             # Returning updated matrix, which has one additional row and column
             return(theta)
         }
-)
+
 
 #'Predictor based on the \code{Innovations} algorithm
 #'
@@ -82,20 +80,19 @@ setMethod("innovations_step",
 #'
 #'@export
 
-setGeneric("innovations_predictor",
-           function (ts_obj, pred_len = 1, entire_ts = TRUE) standardGeneric("innovations_predictor"))
-setMethod("innovations_predictor",
-          "TimeSeries",
-          function (ts_obj, pred_len = 1, entire_ts = TRUE){
+innovations_predictor <-  function (ts_obj, pred_len = 1, entire_ts = TRUE){
 
+            # Validity Check
+            stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
+            validObject(ts_obj)
             # Checking whether pred_len and entire_ts are specified properly
             stopifnot("entire_ts not logical"=is.logical(entire_ts))
             stopifnot("pred_len not numeric"=is.numeric(pred_len))
             stopifnot("pred_len must be greater or equal to 1"=pred_len>=1)
             stopifnot("pred_len not applicable"=pred_len%%1==0)
 
-            # Validity Check
-            validObject(ts_obj)
+
+
 
             # Initial computation of theta matrix, needed for computing X_hats
             thetas <- innovations_step(ts_obj)
@@ -136,4 +133,4 @@ setMethod("innovations_predictor",
                 vec <- ts_obj@data[(len+1):ts_obj@n]
                 return(as(vec,"TimeSeries"))
             }
-})
+}

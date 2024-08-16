@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 library(ZeitreihenR)
 library(ggplot2)
 library(tibble)
+library(patchwork)
 ```
 
 ## Introduction
@@ -28,7 +29,10 @@ In this vignette we provide an overview over the visualization methods provided 
 
 -   *plot_SACVF* method to visualize the SACVF or SACF of a TimeSeries object
 
+-   *plot_spectral_density* method to visualize the spectral density of a AR/MA-TimeSeries object
 -   *plot_periodogram* method to visualize the periodogram of a TimeSeries object
+
+-   *plot_ts_overview* method to visualize all of the above in a composition plot.
 
 ### Plots of Timeseries
 
@@ -47,11 +51,12 @@ In order to plot a time series with prediction, one must first use one of the pr
 
 ```{r}
 ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n = 100)
-plot_timeseries(ar_time_series)
+plot_timeseries(ar_time_series) 
 ar_pred <- DL_predictor(ar_time_series, pred_len=10, entire_ts = FALSE)
 plot_timeseries(ar_time_series, prd=ar_pred)
 
 ```
+
 ### Plots of SACVF/SACF
 
 The *plot_SACVF* method provides SACVF/SACF for a given time series. 
@@ -72,6 +77,11 @@ ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n 
 plot_SACVF(ar_time_series,max_lag=25,acf=TRUE)
 ```
 
+### Plots of spectral density
+TODO
+#### Examples for spectral density plots
+TODO
+
 
 ### Plots of Periodogram
 
@@ -88,5 +98,17 @@ ma_time_series <- MA(ma_params = c(1,-0.9), n = 100)
 plot_periodogram(ma_time_series)
 ```
 
-### Composition Plots,(TODO wochenende)
+### Composition Plots
+The *plot_ts_overview* method provides an overview of a given time_series object. It consists of *plot_timeseries*, *plot_SACVF*, *plot_spectral_density* (if possible) and *plot_periodogram*. The layout is automatically chosen depending on the availability of the spectral density.
 
+
+#### Examples for composition plots
+
+
+```{r}
+ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n = 100)
+vec <- 1:10
+vec_ts <- as(vec,"TimeSeries")
+plot_ts_overview(ar_time_series)
+plot_ts_overview(vec_ts)
+```
