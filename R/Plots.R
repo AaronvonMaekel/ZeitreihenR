@@ -132,8 +132,34 @@ plot_SACVF <- function(ts_obj,acf=FALSE,max_lag=NULL) {
 #'@export
 
 plot_spectral_density <- function(ts_obj) {
-  plot_periodogram(ts_obj) #filler,pls delete and add the real stuff
-  #TODO
+    
+    # Validity check
+    stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
+    validObject(ts_obj)
+    
+    if (is(ts_obj,"AR")){
+        header <- paste0("AR(",length(ts_obj@ar_params),")")
+    }
+    else if (is(ts_obj,"MA")){
+        header <- paste0("MA(",length(ts_obj@ma_params),")")
+    }
+    else stop("Spectral density not available")
+    
+    # Create spectral density data
+    spect_dens <- spect_dens(ts_obj)
+    freq <- seq(0,0.5,by=0.001)
+    data <- spect_dens(freq)
+    
+    # Plot of spectral density
+    tibble2plot <- tibble::tibble(Spect_dens = data, Frequency = freq) #perhaps change names here
+    title <- ggplot2::ggtitle(header)
+    ylab <- ggplot2::ylab("Spectral Density")
+    plt_base <- ggplot2::ggplot(data = tibble2plot, mapping = ggplot2::aes(x = Frequency, y = Spect_dens))
+    lay <-  ggplot2::geom_line(color = "purple")
+    point <- ggplot2::geom_point(color = "royalblue", size = 0.5)
+    labs <- ggplot2::ggtitle("Spectral Density")
+    plt <- plt_base + lay + point + labs + ylab+ title + ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 15))
+    plt
 }
 
 
