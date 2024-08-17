@@ -1,5 +1,8 @@
 spect_dens <- function(TS_obj){
-   
+
+stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
+            validObject(ts_obj)
+
 if (is(TS_obj,"AR")){
         AR_params <- TS_obj@ar_params
         p <- length(AR_params)
