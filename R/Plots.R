@@ -146,12 +146,12 @@ plot_spectral_density <- function(ts_obj) {
     else stop("Spectral density not available")
     
     # Create spectral density data
-    spect_dens <- spect_dens(ts_obj)
+    spect_dens <- spectral_density(ts_obj)
     freq <- seq(0,0.5,by=0.001)
     data <- spect_dens(freq)
     
     # Plot of spectral density
-    tibble2plot <- tibble::tibble(Spect_dens = data, Frequency = freq) #perhaps change names here
+    tibble2plot <- tibble::tibble(Spect_dens = data, Frequency = freq) 
     title <- ggplot2::ggtitle(header)
     ylab <- ggplot2::ylab("Spectral Density")
     plt_base <- ggplot2::ggplot(data = tibble2plot, mapping = ggplot2::aes(x = Frequency, y = Spect_dens))
