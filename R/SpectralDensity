@@ -1,48 +1,46 @@
-spect_dens <- function(TS_obj){
-
-stopifnot("Input is not a time series object"=is(TS_obj,"TimeSeries"))
-            validObject(TS_obj)
-
-if (is(TS_obj,"AR")){
-        AR_params <- TS_obj@ar_params
-        p <- length(AR_params)
-        sd <- TS_obj@sd
+spectral_density <- function(ts_obj){
+    if (is(ts_obj,"AR")){
+        ar_params <- ts_obj@ar_params
+        p <- length(ar_params)
+        index <- 1:p
+        sd <- ts_obj@sd
         returnvalue <- numeric(0)
         spect_dens <- function(ws){
             for (w in ws){
                 if (w < 0 | w > 0.5) 
                     stop("w must lie in interval [0,0.5]")
-                sum <- 0
-                for (k in 1:p){
-                    sum <- sum + AR_params[k]*exp(-2*k*pi*1i*w)            
-                }
-                returnvalue <- c(returnvalue,1/((Mod(1-sum))^2)) #moved sd^2 out here
+                
+                exp_terms <- exp(-2*pi*1i*w*index) 
+                sum <- sum(ar_params*exp_terms)
+                
+                returnvalue <- c(returnvalue,1/((Mod(1-sum))^2)) 
             }
-            return(sd^2*returnvalue)
+            returnvalue <- sd^2*returnvalue
+            return(returnvalue)
         }
         return(spect_dens)
-}
-
-    if (is(TS_obj,"MA")){
-        MA_params <- TS_obj@ma_params
-        q <- length(MA_params)
-        sd <- TS_obj@sd
+    }
+    if (is(ts_obj,"MA")){
+        ma_params <- ts_obj@ma_params
+        q <- length(ma_params)
+        index <- 1:q
+        sd <- ts_obj@sd
         returnvalue <- numeric(0)
         spect_dens <- function(ws){
             for (w in ws){
                 if (w < 0 | w > 0.5) 
                     stop("w must lie in interval [0,0.5]")            
                 sum <- 0
-                for (k in 1:q){
-                    sum <- sum + MA_params[k]*exp(-2*k*pi*1i*w)            
-                }
-                returnvalue <- c(returnvalue,(Mod(1+sum))^2) #moved out sd^2 here
+                exp_terms <- exp(-2*pi*1i*w*index) 
+                sum <- sum(ma_params*exp_terms)
+                
+                returnvalue <- c(returnvalue,(Mod(1+sum))^2) 
             }
-            return(sd^2*returnvalue)
+            returnvalue <- sd^2*returnvalue
+            return(returnvalue)
         }
         return(spect_dens)
     }
-
     else
         stop("Spectral Density not available")
 }
