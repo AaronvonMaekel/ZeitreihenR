@@ -131,7 +131,7 @@ plot_SACVF <- function(ts_obj,acf=FALSE,max_lag=NULL) {
 #'
 #'@export
 
-plot_spectral_density <- function(ts_obj) {
+plot_spectral_density <- function(ts_obj, n) {
     
     # Validity check
     stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
@@ -147,7 +147,7 @@ plot_spectral_density <- function(ts_obj) {
     
     # Create spectral density data
     spect_dens <- spectral_density(ts_obj)
-    freq <- seq(0,0.5,by=0.001)
+    freq <- seq(0,0.5,by=0.5/n)
     data <- spect_dens(freq)
     
     # Plot of spectral density
@@ -155,7 +155,7 @@ plot_spectral_density <- function(ts_obj) {
     title <- ggplot2::ggtitle(header)
     ylab <- ggplot2::ylab("Spectral Density")
     plt_base <- ggplot2::ggplot(data = tibble2plot, mapping = ggplot2::aes(x = Frequency, y = Spect_dens))
-    lay <-  ggplot2::geom_line(color = "purple")
+    lay <-  ggplot2::geom_line(color = "royalblue")
     point <- ggplot2::geom_point(color = "royalblue", size = 0.5)
     labs <- ggplot2::ggtitle("Spectral Density")
     plt <- plt_base + lay + point + labs + ylab+ title + ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 15))
