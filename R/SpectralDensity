@@ -47,7 +47,7 @@ spectral_density <- function(ts_obj){
             for (w in ws){
                 if (w < 0 | w > 0.5) 
                     stop("w must lie in interval [0,0.5]")            
-                sum <- 0
+               
                 exp_terms <- exp(-2*pi*1i*w*index) 
                 sum <- sum(ma_params*exp_terms)
                 
