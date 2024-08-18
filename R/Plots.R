@@ -121,6 +121,8 @@ plot_SACVF <- function(ts_obj,acf=FALSE,max_lag=NULL) {
 #'
 #'@param ts_obj A time series, must be a \code{AR} or \code{MA} class.
 #'
+#'@param n Number of points to be plotted.
+#'
 #'@return The return value is a plot of the spectral_density of a time series.
 #'
 #'@examples
@@ -134,8 +136,11 @@ plot_SACVF <- function(ts_obj,acf=FALSE,max_lag=NULL) {
 plot_spectral_density <- function(ts_obj, n = 10^3) {
     
     # Validity check
-    stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
+    stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"),
+              "n must be a positive integer" = is.numeric(n) && n > 0 && n == as.integer(n))
     validObject(ts_obj)
+
+    
     
     if (is(ts_obj,"AR")){
         header <- paste0("AR(",length(ts_obj@ar_params),")")
