@@ -27,6 +27,7 @@ In this vignette, we will explain the algorithms of the **TimeSeries** package i
 -   Auto Covariance Function **sampleACVF**
 -   Durbin Levinson Algorithm **DLA** and the algorithm with predictions **DL_predictions**
 -   Innovations Algorithm **innovations_step** and the algorithm with predictions **innovations_predictor**
+-   Spectral Density function **spectral_density**
 -   Periodogram for time series **periodogram**
 
 ### Auto Covariance Function
@@ -75,7 +76,29 @@ plot_timeseries(ma_ts)
 ma_pred <- innovations_predictor(ma_ts, pred_len=10, entire_ts = FALSE)
 plot_timeseries(ma_pred)
 ```
+### Spectral density
 
+The spectral density describes how the variance of a stationary time series is distributed over different frequencies, the total integrated spectral density equalling the variance of the series. The spectral density is a helpful tool in identifying domiant frequencies and periodicities in the data.
+
+The spectral density function implented here is based on *Introduction to Time-Series Analysis and Forecasting* by Peter J. Brockwell and Richard A. Davis. The general definition is given in Definition 4.1.1, and the specific definition here used to calculate the spectral density for AR and MA processes is given in Definition 4.4.1.
+
+### Example of the Spectral Density
+
+Below, AR(1) and MA(1) processes are created, and their respective spectral densities are computed. Both are then evaluated at the frequency 0.1. Lastly, both spectral densities are plotted for all frequencies in the range from 0 to 0.5.
+
+```{r}
+AR1  <- AR(ar_params = c(0.3), start_values = c(0), n = 100, sd = 1)
+MA1 <- MA(ma_params = c(0.9),sd = 1,n = 100)
+
+f <- spectral_density(AR1)
+g <- spectral_density(MA1)
+
+f(0.1)
+g(0.1)
+
+plot_spectral_density(AR1)
+plot_spectral_density(MA1)
+```
 ### Periodogram
 
 The periodogram of a time series is a estimator of the spectral density of the time series. For a time series $X_1,...X_n$ it is defined as: $$ I_n(\lambda)=\frac{1}{n} \Bigg\| \sum \limits\*{t=1}^{n}x\_{t}e^{-it\*\lambda} \Bigg\| \^2 $$ where $x_t$ is a combination of trigonometric functions containing Fourier frequencies. The *periodogram* method is a implementation of the periodogram algorithm in Definition 4.2.1 of the book *Introduction to Time-Series Analysis and Forecasting* by Peter J. Brockwell and Richard A. Davis. It takes a TimeSeries object and returns the Fourier-frequencies as well as the estimated spectral density values.
