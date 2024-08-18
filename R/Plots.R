@@ -131,7 +131,7 @@ plot_SACVF <- function(ts_obj,acf=FALSE,max_lag=NULL) {
 #'
 #'@export
 
-plot_spectral_density <- function(ts_obj, n) {
+plot_spectral_density <- function(ts_obj, n = 10^3) {
     
     # Validity check
     stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
