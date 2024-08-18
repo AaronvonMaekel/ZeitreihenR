@@ -92,6 +92,14 @@ ma_time_series <- MA(ma_params = c(0.4,-0.7), n = 100)
 plot_spectral_density(ma_time_series)
 ```
 
+One can also choose the number of points n to be plotted (default 10^3):
+
+```{r}
+AR1  <- AR(ar_params = c(0.3), start_values = c(0), n = 100, sd = 1)
+plot_periodogram(ar_time_series, n = 10)
+```
+
+
 
 ### Plots of Periodogram
 
@@ -107,14 +115,6 @@ plot_periodogram(ar_time_series)
 ma_time_series <- MA(ma_params = c(1,-0.9), n = 100)
 plot_periodogram(ma_time_series)
 ```
-
-One can also choose the number of points n to be plotted (default 10^3):
-
-```{r}
-AR1  <- AR(ar_params = c(0.3), start_values = c(0), n = 100, sd = 1)
-plot_periodogram(ar_time_series, n = 10)
-```
-
 
 ### Composition Plots
 The *plot_ts_overview* method provides an overview of a given time_series object. It consists of *plot_timeseries*, *plot_SACVF*, *plot_spectral_density* (if possible) and *plot_periodogram*. The layout is automatically chosen depending on the availability of the spectral density.
