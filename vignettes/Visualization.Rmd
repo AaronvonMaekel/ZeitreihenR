@@ -77,10 +77,20 @@ ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n 
 plot_SACVF(ar_time_series,max_lag=25,acf=TRUE)
 ```
 
-### Plots of spectral density
-TODO
+### Plots of Spectral Density
+
+The *plot_spectral_density* method provides plots of the spectral density of a given AR or MA time-series.
+
 #### Examples for spectral density plots
-TODO
+
+In order to plot a spectral density, one simply puts an AR or MA object into the *plot_spectral_density* function, as in the following example:
+
+```{r}
+ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.7, -0.3), sd = 1, n = 100)
+plot_spectral_density(ar_time_series)
+ma_time_series <- MA(ma_params = c(0.4,-0.7), n = 100)
+plot_spectral_density(ma_time_series)
+```
 
 
 ### Plots of Periodogram
