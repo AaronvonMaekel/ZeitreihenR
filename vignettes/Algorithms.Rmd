@@ -75,13 +75,14 @@ plot_timeseries(ma_ts)
 ma_pred <- innovations_predictor(ma_ts, pred_len=10, entire_ts = FALSE)
 plot_timeseries(ma_pred)
 ```
+
 ### Spectral density
 
 The spectral density describes how the variance of a stationary time series is distributed over different frequencies, the total integrated spectral density equalling the variance of the series. The spectral density is a helpful tool in identifying domiant frequencies and periodicities in the data.
 
 The spectral density function implented here is based on *Introduction to Time-Series Analysis and Forecasting* by Peter J. Brockwell and Richard A. Davis. The general definition is given in Definition 4.1.1, and the specific definition here used to calculate the spectral density for AR and MA processes is given in Definition 4.4.1.
 
-### Example of the Spectral Density
+#### Example of the Spectral Density
 
 Below, AR(1) and MA(1) processes are created, and their respective spectral densities are computed. Both are then evaluated at the frequency 0.1. Lastly, both spectral densities are plotted for all frequencies in the range from 0 to 0.5.
 
