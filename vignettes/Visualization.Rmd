@@ -96,7 +96,7 @@ One can also choose the number of points n to be plotted (default 10^3):
 
 ```{r}
 AR1  <- AR(ar_params = c(0.3), start_values = c(0), n = 100, sd = 1)
-plot_periodogram(ar_time_series, n = 10)
+plot_spectral_density(ar_time_series, n = 10)
 ```
 
 

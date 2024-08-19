@@ -4,10 +4,12 @@
 \alias{plot_spectral_density}
 \title{spectral density plotting for AR/MA time serie}
 \usage{
-plot_spectral_density(ts_obj)
+plot_spectral_density(ts_obj, n = 10^3)
 }
 \arguments{
 \item{ts_obj}{A time series, must be a \code{AR} or \code{MA} class.}
+
+\item{n}{Number of points to be plotted.}
 }
 \value{
 The return value is a plot of the spectral_density of a time series.

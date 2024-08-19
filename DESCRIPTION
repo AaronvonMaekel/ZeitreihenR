@@ -30,3 +30,4 @@ Collate:
   InnovationsAlgorithm.R
   Periodogram.R
   Plots.R
+  SpectralDensity.R
