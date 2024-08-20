@@ -91,7 +91,9 @@ innovations_predictor <-  function (ts_obj, pred_len = 1, entire_ts = TRUE){
             stopifnot("pred_len must be greater or equal to 1"=pred_len>=1)
             stopifnot("pred_len not applicable"=pred_len%%1==0)
 
-
+            # Ensuring mean-zero
+            in_mean <- mean(ts_obj@data)
+            ts_obj@data <- ts_obj@data - in_mean
 
 
             # Initial computation of theta matrix, needed for computing X_hats
@@ -127,10 +129,11 @@ innovations_predictor <-  function (ts_obj, pred_len = 1, entire_ts = TRUE){
 
             # Produce output according to entire_ts
             if(entire_ts){
-                vec <- ts_obj@data
+                vec <- ts_obj@data + in_mean
                 return(as(vec,"TimeSeries"))
             } else {
                 vec <- ts_obj@data[(len+1):ts_obj@n]
+                vec <- vec + in_mean
                 return(as(vec,"TimeSeries"))
             }
 }

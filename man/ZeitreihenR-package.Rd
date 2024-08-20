@@ -14,8 +14,8 @@ The package contains S4-classes as well as methods for time series and predictio
 Authors:
 \itemize{
   \item Eivind Hjertholm \email{xxx@stud.uni-heidelberg.de}
-  \item Victoria Mezger \email{victoria.mezger@stud.uni-heidelberg.de}
-  \item Julia Renner \email{xxx@stud.uni-heidelberg.de}
+  \item Victoria  Mezger \email{victoria.mezger@stud.uni-heidelberg.de}
+  \item Julia  Renner \email{xxx@stud.uni-heidelberg.de}
   \item Klaus Stier \email{xxx@stud.uni-heidelberg.de}
 }
 
