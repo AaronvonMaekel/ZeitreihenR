@@ -26,7 +26,6 @@ DLA <- function(ts_obj){
                     phi_n <- (1/nu) * (acf_compl[n] - sum(val))
                     phi <- phi - phi_n * rev(phi)
                     phi <- c(phi, phi_n)
-                    nu <- nu * (1 - phi_n*phi_n)
                     nu <- nu * (1 - phi_n^2)
                 }
             }
@@ -62,6 +61,10 @@ DL_predictor <- function(ts_obj, pred_len=1, entire_ts = TRUE){
             stopifnot("entire_ts has to be logical" = is.logical(entire_ts))
             stopifnot("Entered value for entire_ts is not compatible" = length(entire_ts) == 1)
 
+            # Turning object into a mean-zero time series (needed for prediction to work)
+            in_mean <- mean(ts_obj@data)
+            ts_obj@data <- ts_obj@data - in_mean
+
             in_len <- ts_obj@n
             for (j in 1:pred_len){
                 # Computing estimate using coefficients obtained from the DL algorithm
@@ -75,8 +78,9 @@ DL_predictor <- function(ts_obj, pred_len=1, entire_ts = TRUE){
 
             # Producing output according to the specification made by entire_ts
             if (entire_ts==TRUE){
-                return(as(vec,"TimeSeries"))
+                return(as(vec + in_mean,"TimeSeries"))
             } else {
+                vec <- vec + in_mean
                 vec <- vec[(in_len + 1):(in_len + pred_len)]
                 return(as(vec,"TimeSeries"))
             }
