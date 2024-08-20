@@ -27,6 +27,7 @@ DLA <- function(ts_obj){
                     phi <- phi - phi_n * rev(phi)
                     phi <- c(phi, phi_n)
                     nu <- nu * (1 - phi_n*phi_n)
+                    nu <- nu * (1 - phi_n^2)
                 }
             }
             return(phi)

@@ -246,9 +246,7 @@ setValidity("AR", function(object) {
         if( any(is.na(object@start_values))){
                 errors <- c(errors,"There are missing start values")
         }
-        if( any(object@data[1:length(object@start_values)]!=object@start_values)){
-                errors <- c(errors,"The start of the time series differs from the start values")
-        }
+
 
     }else{
       errors <- c(errors,"There are no Start Values")

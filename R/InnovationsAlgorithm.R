@@ -96,7 +96,7 @@ innovations_predictor <-  function (ts_obj, pred_len = 1, entire_ts = TRUE){
 
             # Initial computation of theta matrix, needed for computing X_hats
             thetas <- innovations_step(ts_obj)
-            for (n in 3:(ts_obj@n-1)){
+            for (k in 3:(ts_obj@n-1)){
                 thetas <- innovations_step(ts_obj, thetas_prev = thetas)
             }
 
