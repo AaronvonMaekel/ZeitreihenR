@@ -8,22 +8,21 @@ DLA <- function(ts_obj){
             # Save number of values in time series
             max_n <- ts_obj@n
 
-            # Computing the ACF values
-            acf_compl <- c(sapply(1:(max_n-1), \(x) {sampleACVF(ts_obj, x)}), 0)
-
+            # Computing the ACVF values
+            acvf_compl <- c(sapply(1:(max_n-1), \(x) {sampleACVF(ts_obj, x)}), 0)
             # Compute coefficients
-            for (n in 1:max_n) {
-               if (n == 1) {
+            for (i in 1:max_n) {
+               if (i == 1) {
                    # Initialization
                    phi <- sampleACVF(ts_obj, 1) / sampleACVF(ts_obj, 0)
                    phi_n <- phi
-                   nu <- sampleACVF(ts_obj, 0) * (1 - phi^2)
+                   nu <- sampleACVF(ts_obj, 0) * (1 - phi_n^2)
               } else {
                     # Recursive computation
-                    val <- sapply(1:(n-1), \(j) {sampleACVF(ts_obj, n-j) * phi[j]})
+                    val <- phi * acvf_compl[(i-1):1]
 
                     # Update values of phi and nu
-                    phi_n <- (1/nu) * (acf_compl[n] - sum(val))
+                    phi_n <- (1/nu) * (acvf_compl[i] - sum(val))
                     phi <- phi - phi_n * rev(phi)
                     phi <- c(phi, phi_n)
                     nu <- nu * (1 - phi_n^2)
