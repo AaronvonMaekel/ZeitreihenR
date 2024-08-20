@@ -99,6 +99,7 @@ g(0.1)
 plot_spectral_density(AR1)
 plot_spectral_density(MA1)
 ```
+
 ### Periodogram
 
 The periodogram of a time series is a estimator of the spectral density of the time series. For a time series $X_1,...X_n$ it is defined as: $$ I_n(\lambda)=\frac{1}{n} \Bigg\| \sum \limits\*{t=1}^{n}x\_{t}e^{-it\*\lambda} \Bigg\| \^2 $$ where $x_t$ is a combination of trigonometric functions containing Fourier frequencies. The *periodogram* method is a implementation of the periodogram algorithm in Definition 4.2.1 of the book *Introduction to Time-Series Analysis and Forecasting* by Peter J. Brockwell and Richard A. Davis. It takes a TimeSeries object and returns the Fourier-frequencies as well as the estimated spectral density values.
@@ -110,3 +111,33 @@ ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n 
 periodogram(ar_time_series)
 plot_periodogram(ar_time_series)
 ```
+
+## Example walkthrough: Dow Jones Industrial Average
+
+In the following, we will consider real-world data from the Dow Jones Industrial Average Index. For simplicity, only look at daily closing prices and understand this data as a time series. The first closing price considered is of March 19th 2024, the last data point is of August 9th 2024. Below, the datset (named *dow_data*) we will deal with is shown:  
+
+```{r, echo=FALSE}
+dow_data <- c(39110.76, 39512.13, 39781.37, 39475.90, 39313.64, 39282.33, 39760.08, 39807.37,
+          39566.85, 39170.24, 39127.14, 38596.98, 38904.04, 38892.80, 38883.67, 38461.51,
+          38459.08, 37983.24, 37735.11, 37798.97, 37753.31, 37775.38, 37986.40, 38239.98,
+          38503.69, 38460.92, 38085.80, 38239.66, 38386.09, 37815.92, 37903.29, 38225.66,
+          38675.68, 38852.27, 38884.26, 39056.39, 39387.76, 39512.84, 39431.51, 39558.11,
+          39908.00, 39869.38, 40003.59, 39806.77, 39872.99, 39671.04, 39065.26, 39069.59,
+          38852.86, 38441.54, 38111.48, 38686.32, 38571.03, 38711.29, 38807.33, 38886.17,
+          38798.99, 38868.04, 38747.42, 38712.21, 38647.10, 38589.16, 38778.10, 38834.86,
+          39134.76, 39150.33, 39411.21, 39112.16, 39127.80, 39164.06, 39118.86, 39169.52,
+          39331.85, 39308.00, 39375.87, 39344.79, 39291.97, 39721.36, 39753.75, 40000.90,
+          40211.72, 40954.48, 41198.08, 40665.02, 40287.53, 40415.44, 40358.09, 39853.87,
+          39935.07, 40589.34, 40539.93, 40743.33, 40842.79, 40347.97, 39737.26, 38703.27,
+          38997.66, 38763.45, 39446.49, 39497.54)
+print(dow_data)
+```
+
+Assume we want to make a prediction for the next trading day (August 12th 2024). This can be done using the Durbin Levinson Algorithm or the Innovations Algorithm. In order to use them however, we will need to turn our raw data into a TimeSeries object. This can be done using the conversion with **as**: 
+
+```{r}
+dow_ts <- as(dow_data, "TimeSeries")
+show(dow_ts)
+```
+
+
