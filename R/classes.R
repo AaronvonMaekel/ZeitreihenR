@@ -70,22 +70,39 @@ setClass(
 #'@export
 
 AR <- function(ar_params,start_values,n,sd=1) {
-    p <- length(ar_params)
 
+    #we have to catch errors in the input arguments here already because the
+    #validity checks start after the construction of the object
+    #this means that this function is partially validated in the beginning and
+    #completely validated in the end.
+    #we skip the validation of n,sd being a single value and not a vector,
+    #by accessing the first element of these variables instead of the whole variable.
+    stopifnot("standard deviation is not available"=(length(sd)>0 && !is.na(sd[1])))
+    stopifnot("standard deviation is not a number"=class(sd)=="numeric")
+    stopifnot("standard deviation is negative"=sd[1]>=0)
+    stopifnot("length is not available"=(length(n)>0 && !is.na(n[1]) ))
+    stopifnot("length is not a positive number"=n[1]>0)
+    stopifnot("length is not a integer"=n[1] %% 1 == 0)
+    stopifnot("AR parameters are not numeric"=class(ar_params)=="numeric")
+    stopifnot("start values are not numeric"=class(start_values)=="numeric")
+    stopifnot("AR parameters are not available"=(length(ar_params)>0 && !any(is.na(ar_params))))
+    stopifnot("start values parameters are not available"=(length(start_values)>0 && !any(is.na(start_values))))
+
+    p <- length(ar_params)
     stopifnot("Too many start values for requested length of the time series"=p<=n)
 
     # Initializing time series with zeros
-    time_series <- numeric(n)
+    time_series <- numeric(n[1])
 
     # Generating white-noise components
-    noise <- rnorm(n-p , 0, sd)
+    noise <- rnorm(n[1]-p , 0, sd[1])
 
     # Initializing the first p values
     time_series[1:p] <- start_values
 
     # Generating further values for the AR(p) time series (in case n>p)
-    if (n>p) {
-        for (t in (p + 1):n) {
+    if (n[1]>p) {
+        for (t in (p + 1):n[1]) {
             time_series[t] <- sum(ar_params * rev(time_series[(t-p):(t-1)])) + noise[t-p]
         }
     }
@@ -115,6 +132,24 @@ AR <- function(ar_params,start_values,n,sd=1) {
 #'@export
 
 MA <- function(ma_params,n,sd=1 ) {
+  #we have to catch errors in the input arguments here already because the
+  #validity checks start after the construction of the object
+  #this means that this function is partially validated in the beginning and
+  #completely validated in the end.
+  #we skip the validation of n,sd being a single value and not a vector,
+  #by accessing the first element of these variables instead of the whole variable.
+  stopifnot("standard deviation is not available"=(length(sd)>0 && !is.na(sd[1])))
+  stopifnot("standard deviation is not a number"=class(sd)=="numeric")
+  stopifnot("standard deviation is negative"=sd[1]>=0)
+  stopifnot("length is not available"=(length(n)>0 && !is.na(n[1]) ))
+  stopifnot("length is not a positive number"=n[1]>0)
+  stopifnot("length is not a integer"=n[1] %% 1 == 0)
+  stopifnot("MA parameters are not numeric"=class(ma_params)=="numeric")
+  stopifnot("MA parameters are not available"=(length(ma_params)>0 && !any(is.na(ma_params))))
+
+
+
+
     q <- length(ma_params)
 
     # Initializing time series with zeros

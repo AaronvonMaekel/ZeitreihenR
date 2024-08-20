@@ -22,7 +22,7 @@ library(tibble)
 
 ## Introduction
 
-In this vignette, we will explain the functions of the **TimeSeries** package in R. The package contains S4-classes as well as methods for time series and predictions for them. The definitions and methods are based on the book *Introduction to Time-Series Analysis and Forecasting* by Peter J. Brockwell and Richard A. Davis.
+In this vignette, we will explain the underlying classes and methods of the **TimeSeries** package in R. The definitions and methods are based on the book *Introduction to Time-Series Analysis and Forecasting* by Peter J. Brockwell and Richard A. Davis.
 
 -   S4-class **TimeSeries** with slots standard deviation, length of object and data
 
@@ -32,11 +32,12 @@ In this vignette, we will explain the functions of the **TimeSeries** package in
 
 -   **Resample** function for sampling a time series
 
--   Vector to time series function **vec_to_ts** which transforms a vector to a time series
+-   Additional helper functions/overloads like **show** and **as**
+
 
 ### TimeSeries class
 
-A *time series* is a set of observations $x_t$, each one being recorded at a specific time $t$. A time series model for the observed data $x_t$ is a specification of the joint distributions (or possibly only the means and covariances) of a sequence of random variables $X_t$ of which $x_t$ is postulated to be a realization.
+A *time series* is a set of observations $x_t$, each one being recorded at a specific time $t$. A time series model for the observed data $x_t$ is a specification of the joint distributions (or possibly only the means and covariances) of a sequence of random variables $X_t$ of which $x_t$ is postulated to be a realization. We dont want to use this general form a lot, as this is just a base class from which we want to inherit, but there is still some functionality available for general TimeSeries.
 
 ### AR TimeSeries and generator
 
@@ -79,7 +80,7 @@ plot_timeseries(resample(ma1))
 
 ### Helper Functions
 #### Custom conversion to time series
-We overloaded the as() function to accomodate for conversions to the TimeSeries object. 
+We overloaded the as() function to accommodate for conversions to the TimeSeries object. 
 It takes a numeric vector and returns a TimeSeries object, having the same length as the vector.
 ```{r}
 vec <- 1:10

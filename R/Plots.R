@@ -134,14 +134,14 @@ plot_SACVF <- function(ts_obj,acf=FALSE,max_lag=NULL) {
 #'@export
 
 plot_spectral_density <- function(ts_obj, n = 10^3) {
-    
+
     # Validity check
     stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"),
               "n must be a positive integer" = is.numeric(n) && n > 0 && n == as.integer(n))
     validObject(ts_obj)
 
-    
-    
+
+
     if (is(ts_obj,"AR")){
         header <- paste0("AR(",length(ts_obj@ar_params),")")
     }
@@ -149,14 +149,14 @@ plot_spectral_density <- function(ts_obj, n = 10^3) {
         header <- paste0("MA(",length(ts_obj@ma_params),")")
     }
     else stop("Spectral density not available")
-    
+
     # Create spectral density data
     spect_dens <- spectral_density(ts_obj)
     freq <- seq(0,0.5,by=0.5/n)
     data <- spect_dens(freq)
-    
+
     # Plot of spectral density
-    tibble2plot <- tibble::tibble(Spect_dens = data, Frequency = freq) 
+    tibble2plot <- tibble::tibble(Spect_dens = data, Frequency = freq)
     title <- ggplot2::ggtitle(header)
     ylab <- ggplot2::ylab("Spectral Density")
     plt_base <- ggplot2::ggplot(data = tibble2plot, mapping = ggplot2::aes(x = Frequency, y = Spect_dens))
@@ -237,7 +237,6 @@ plot_ts_overview <- function(ts_obj){
       (plt1 + plt2) /( plt3 + plt4)
   }
   else{
-    #(plt1 + plt2) / plt4
     layout <- "AABB
                 AABB
                 #CC#
