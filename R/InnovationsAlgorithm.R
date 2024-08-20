@@ -77,7 +77,7 @@ innovations_step <- function(ts_obj, thetas_prev = matrix(sampleACVF(ts_obj, 1)/
 #'
 #'@examples ma_ts <- MA(ma_params = 0.5, n = 50, sd = 1)
 #'innovations_predictor(ma_ts, pred_len=5, entire_ts = FALSE)
-#'
+#'@references  Peter J. Brockwell, Richard A. Davis (2016) \emph{Introduction to Time-Series Analysis and Forecasting}; Springer Verlag.
 #'@export
 
 innovations_predictor <-  function (ts_obj, pred_len = 1, entire_ts = TRUE){

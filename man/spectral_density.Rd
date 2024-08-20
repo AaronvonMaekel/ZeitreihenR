@@ -22,5 +22,7 @@ The returned spectral density function is defined for frequencies in the interva
 AR1 <- AR(ar_params = 0.5, start_values = 1, n = 50, sd = 1)
 spect_dens <- spectral_density(AR1)
 spect_dens(0.2)
-
+}
+\references{
+Peter J. Brockwell, Richard A. Davis (2016) \emph{Introduction to Time-Series Analysis and Forecasting}; Springer Verlag.
 }

@@ -9,7 +9,7 @@
 #'@examples
 #'ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n = 100)
 #'periodogram(ar_time_series)
-#'
+#'@references  Peter J. Brockwell, Richard A. Davis (2016) \emph{Introduction to Time-Series Analysis and Forecasting}; Springer Verlag.
 #'@export
 
 "periodogram" <- function(ts_obj){
