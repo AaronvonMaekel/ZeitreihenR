@@ -18,7 +18,7 @@ sampleACVF <- function(ts_obj,h){
               # Validity checks
               stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
               validObject(ts_obj)
-              stopifnot("Index is not atomic"=is.atomic(h))
+              stopifnot("Index is not a singular value"=length(h)==1)
               stopifnot("Index is not of type numeric"=is.numeric(h))
               stopifnot("Index is not a integer"=(h %% 1 == 0))
               stopifnot("index out of bounds"=abs(h)<ts_obj@n)

@@ -20,7 +20,8 @@ Imports:
     patchwork
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Collate:
   ZeitreihenR-package.R
@@ -31,3 +32,4 @@ Collate:
   Periodogram.R
   Plots.R
   SpectralDensity.R
+Config/testthat/edition: 3

@@ -73,15 +73,12 @@ DL_predictor <- function(ts_obj, pred_len=1, entire_ts = TRUE){
                 ts_obj@data <- c(ts_obj@data, new_val)
                 ts_obj@n <- ts_obj@n + 1
             }
-            vec <- ts_obj@data
+            vec <- ts_obj@data + in_mean
 
             # Producing output according to the specification made by entire_ts
-            if (entire_ts==TRUE){
-                return(as(vec + in_mean,"TimeSeries"))
-            } else {
-                vec <- vec + in_mean
+            if (entire_ts==FALSE){
                 vec <- vec[(in_len + 1):(in_len + pred_len)]
-                return(as(vec,"TimeSeries"))
             }
+            return(as(vec,"TimeSeries"))
 }
 

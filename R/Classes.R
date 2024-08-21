@@ -88,7 +88,7 @@ AR <- function(ar_params,start_values,n,sd=1) {
     stopifnot("AR parameters are not available"=(length(ar_params)>0 && !any(is.na(ar_params))))
     stopifnot("start values parameters are not available"=(length(start_values)>0 && !any(is.na(start_values))))
 
-    p <- length(ar_params)
+    p <- length(start_values)
     stopifnot("Too many start values for requested length of the time series"=p<=n)
 
     # Initializing time series with zeros
@@ -266,7 +266,7 @@ setValidity("MA", function(object) {
     # Checking MA-Parameters
     if(length(object@ma_params)!=0){
         if(any(is.na(object@ma_params))){
-            errors <- c(errors,"there are missing MA parameters")
+            errors <- c(errors,"There are missing MA parameters")
         }
     }else{
       errors <- c(errors,"There are no MA parameters")
