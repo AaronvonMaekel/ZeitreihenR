@@ -95,7 +95,7 @@ plot_SACVF <- function(ts_obj,acf=FALSE,max_lag=NULL) {
     return(sampleACVF(ts_obj,x))
   })
 
-  # Plot of periodogram
+  # Plot of sacvf
   if(acf){
     sacf <- sacvf / sacvf[1 ]
     tibble2plot <- tibble::tibble(SACF = sacf, Lag = (0:max_lag))
