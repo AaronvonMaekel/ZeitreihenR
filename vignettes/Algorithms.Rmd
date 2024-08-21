@@ -30,6 +30,8 @@ In this vignette, we will explain the algorithms of the **TimeSeries** package i
 -   Spectral Density function **spectral_density**
 -   Periodogram for time series **periodogram**
 
+After that, this vignette will present an example walkthrough applying some of these methods to a real-world dataset.
+
 ### Auto Covariance Function
 
 The auto covariance function is a function which describes the dependencies between a time series at a time difference h: (TODO: bessere beschreibung einsetzen ) Let $X_t$ be a stationary time series. The *autocovariance function (ACVF)* of $X_t$ at lag h is $$\gamma_X(h) = Cov(X_t+h, X_t)$$. This function however only works if the underlying model is known. For that reason, we will work with the following sample autocovariance function, that uses the data: The *sample autocovariance function* is $$\hat{\gamma}(h) = \frac{1}{n}\sum_{t=1}^{n-|h|}(x_{t+|h|}-\bar{x})(x_t-\bar{x}), -n < h < n$$. The *SACVF* is a realization of the definition and computes the sample autocovariance function of a time series at a given point of time.
@@ -114,7 +116,7 @@ plot_periodogram(ar_time_series)
 
 ## Example walkthrough: Dow Jones Industrial Average
 
-In the following, we will consider real-world data from the Dow Jones Industrial Average Index. For simplicity, only look at daily closing prices and understand this data as a time series. The first closing price considered is of March 19th 2024, the last data point is of August 9th 2024. Below, the datset (named *dow_data*) we will deal with is shown:  
+In the following, we will consider real-world data from the Dow Jones Industrial Average Index (stock index tracking the development of 30 large US companies). For simplicity, we only look at daily closing prices and understand this data as a time series. The first closing price considered is of March 19th 2024, the last data point is of August 9th 2024. Below, the dataset (named *dow_data*) we will deal with is shown:  
 
 ```{r, echo=FALSE}
 dow_data <- c(39110.76, 39512.13, 39781.37, 39475.90, 39313.64, 39282.33, 39760.08, 39807.37,
@@ -140,4 +142,16 @@ dow_ts <- as(dow_data, "TimeSeries")
 show(dow_ts)
 ```
 
+Having a TimeSeries object, we can now apply the predictor using the Durbin Levinson algorithm and obtain (we make use of the fact that the default value of *pred_len* is 1): 
 
+```{r}
+DL_predictor(dow_ts, entire_ts = FALSE)
+```
+
+The predictor function, which is based on the Innovations algorithm, yields the following result: 
+
+```{r}
+innovations_predictor(dow_ts, entire_ts = FALSE)
+```
+
+Note that the actual closing price was 39357. Both predictions are close to this, but did not quite get the exact closing price. This underlines the fact that making predictions for a time series (or the stock market) is non-trivial and needs some thoughtful consideration.
