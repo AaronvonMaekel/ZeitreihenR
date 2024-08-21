@@ -9,13 +9,13 @@
 The package contains S4-classes as well as methods for time series and predictions for them. The definitions and methods are based on the book *Introduction to Time-Series Analysis and Forecasting* by Peter J. Brockwell and Richard A. Davis.
 }
 \author{
-\strong{Maintainer}: Aaron Mäkel \email{cv234@stud.uni-heidelberg.de}
+\strong{Maintainer}: Aaron MC$kel \email{cv234@stud.uni-heidelberg.de}
 
 Authors:
 \itemize{
   \item Eivind Hjertholm \email{xxx@stud.uni-heidelberg.de}
-  \item Victoria  Mezger \email{victoria.mezger@stud.uni-heidelberg.de}
-  \item Julia  Renner \email{xxx@stud.uni-heidelberg.de}
+  \item Victoria Mezger \email{victoria.mezger@stud.uni-heidelberg.de}
+  \item Julia Renner \email{xxx@stud.uni-heidelberg.de}
   \item Klaus Stier \email{xxx@stud.uni-heidelberg.de}
 }
 

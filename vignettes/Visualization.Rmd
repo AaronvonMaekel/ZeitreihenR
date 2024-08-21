@@ -117,7 +117,7 @@ plot_periodogram(ma_time_series)
 ```
 
 ### Composition Plots
-The *plot_ts_overview* method provides an overview of a given time_series object. It consists of *plot_timeseries*, *plot_SACVF*, *plot_spectral_density* (if possible) and *plot_periodogram*. The layout is automatically chosen depending on the availability of the spectral density.
+The *plot_ts_overview* method provides an overview of a given time_series object using the library **patchwork**. It consists of *plot_timeseries*, *plot_SACVF*, *plot_spectral_density* (if possible) and *plot_periodogram*. The layout is automatically chosen depending on the availability of the spectral density.
 
 
 #### Examples for composition plots

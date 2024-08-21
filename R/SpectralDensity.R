@@ -16,6 +16,11 @@
 #'@export
 
 spectral_density <- function(ts_obj){
+
+    # Validity Check
+    stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
+    validObject(ts_obj)
+
     if (is(ts_obj,"AR")){
         ar_params <- ts_obj@ar_params
         p <- length(ar_params)

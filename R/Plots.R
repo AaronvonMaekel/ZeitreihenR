@@ -229,6 +229,11 @@ plot_periodogram <- function(ts_obj) {
 #'
 #'@export
 plot_ts_overview <- function(ts_obj){
+
+  # Validity Check
+  stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
+  validObject(ts_obj)
+
   plt1 <- plot_timeseries(ts_obj)
   plt2 <- plot_SACVF(ts_obj)
   plt4 <- plot_periodogram(ts_obj)

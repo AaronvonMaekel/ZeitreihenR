@@ -10,6 +10,7 @@
 #' @importFrom ggplot2 ggtitle
 #' @importFrom ggplot2 labs
 #' @importFrom ggplot2 theme
+#' @importFrom gridExtra grid.arrange
 #' @importFrom methods as
 #' @importFrom methods is
 #' @importFrom methods new

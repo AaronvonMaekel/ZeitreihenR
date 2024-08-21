@@ -18,32 +18,49 @@ knitr::opts_chunk$set(
 library(ZeitreihenR)
 library(ggplot2)
 library(tibble)
+library(patchwork)
 ```
 
 ## Introduction
 
 In this vignette, we will explain the underlying classes and methods of the **TimeSeries** package in R. The definitions and methods are based on the book *Introduction to Time-Series Analysis and Forecasting* by Peter J. Brockwell and Richard A. Davis.
 
--   S4-class **TimeSeries** with slots standard deviation, length of object and data
+-   S4-class **TimeSeries** 
 
--   Child-classes **AR TimeSeries** and **MA TimeSeries**
+-   S4-Child-classes **AR** and **MA**
 
--   Generators for AR and MA TimeSeries **AR** and **MA**
+-   Generators **AR()** and **MA()** for AR/MA TimeSeries 
 
--   **Resample** function for sampling a time series
+-   extensive Validation procedures
 
--   Additional helper functions/overloads like **show** and **as**
+-   **resample()** function for sampling a time series
 
+-   Additional helper functions/overloads **show()** and **as()**
 
+## Theory 
 ### TimeSeries class
 
 A *time series* is a set of observations $x_t$, each one being recorded at a specific time $t$. A time series model for the observed data $x_t$ is a specification of the joint distributions (or possibly only the means and covariances) of a sequence of random variables $X_t$ of which $x_t$ is postulated to be a realization. We dont want to use this general form a lot, as this is just a base class from which we want to inherit, but there is still some functionality available for general TimeSeries.
 
-### AR TimeSeries and generator
+### AR/MA TimeSeries
 
-A *AR(p) Process* is a stochastical process which is described by the following model: $X_t$ is an autoregressive process of order $p$ if $X_t = \theta_1 X_{t-1}+...+\theta_p X_{t-p} + Z_t$, where $Z_t \sim \text{WN}(0,\sigma^2)$ and $\theta_1,...,\theta_q$ are constants. We call $Z_t$ white noise and assume that the white noise components are drawn independently from a centered normal distribution with standard deviation *sd*. The function *AR* is a method for the TimeSeries class and generates an AR(p) time series.
+A *AR(p) Process* is a stochastical process which is described by the following model: $X_t$ is an autoregressive process of order $p$ if $X_t = \theta_1 X_{t-1}+...+\theta_p X_{t-p} + Z_t$, where $Z_t \sim \text{WN}(0,\sigma^2)$ and $\theta_1,...,\theta_q$ are constants. We call $Z_t$ white noise and assume that the white noise components are drawn independently from a centered normal distribution with standard deviation *sd*.
 
-#### Example for AR TimeSeries
+A *MA(q) Process* on the other hand is described by the following model: $X_t$ is a moving-average process of order $q$ if $X_t =Z_t +\theta_1Z_{t−1} +···+\theta_q Z_{t−q}$, with $Z_t$ and $\theta_1,...,\theta_q$ being defined as before. 
+
+## Implementation
+
+We wanted to solve our tasks using an object oriented framework, thus we chose to use the S4 System. We have a base class **TimeSeries** containing the following slots:
+slots 
+-   **n**, the length of the TimeSeries.
+-   **sd**, the standard deviation used in generating white noise.
+-   **data**, the numeric  vector containing the TimeSeries.
+
+This base class will not have a custom constructor but a conversion operator to convert existing numeric vectors to the **TimeSeries** Class, which we will show later.
+
+There are also the two subclasses **AR** and **MA**, which also have their corresponding parameters as slots **ar_params/ma_params**. The **AR** class also has the slot **start_values** containing the needed start values for its generation. Both classes have a custom constructor **AR()/MA()**.
+
+#### Example for AR/MA - TimeSeries
 
 We start with an example for an AR(2) time series, where we have two parameters and 2 start values.
 
@@ -52,30 +69,41 @@ ar1 <- AR(ar_params = c(0.3, 0.7), start_values = c(1,2), n = 30, sd = 1)
 plot_timeseries(ar1) 
 ```
 
-### MA TimeSeries and generator
 
-A *MA(q) Process* is a stochastical process which is described by the following model: $X_t$ is a moving-average process of order $q$ if $X_t =Z_t +\theta_1Z_{t−1} +···+\theta_q Z_{t−q}$, where $Z_t \sim \text{WN}(0,\sigma^2)$ and $\theta_1,...,\theta_q$ are constants. We call $Z_t$ white noise and assume that the white noise components are drawn independently from a centered normal distribution with standard deviation *sd*. The function *AR* is a method for the TimeSeries class and generates an AR(p) time series.
-
-#### Example for MA TimeSeries
-Again, we start with a small example for a MA time series with two parameters and length 30. Note that the MA series does not contain start values. 
+Now we construct a MA time series with two parameters and length 30. The standard devation has the default value of 1, so we can omit this parameter in the constructors. Note that the MA series does not contain start values. 
 ```{r}
-ma1 <- MA(ma_params = c(0.3,0.7), n=30, sd=1)
+ma1 <- MA(ma_params = c(0.3,0.7), n=30)
 plot_timeseries(ma1)
 ```
+
+### Structure and Validation
+If a function is working differently depending on the class of the object, for example **resample()**, then we implemented it as a generic method. Else we wrote  functions which check if the input is a **TimeSeries** object or inherits from it.
+
+The S4-System is allowing users to manually change slots of their objects, to prevent this from breaking our functions, we have implemented an extensive validation system:
+
+- The default validator which is called after the constructor finished only checks if each slot has the correct class. With **setValidity** did we extend the validation check of **TimeSeries** and its sub classes to check if the slots of an object are available, do not contain **NA_Real_** values and are reasonable (for example there should be as many start values as there are AR-parameters). 
+
+-   It is fine if the slot **sd** is missing in the base class, because when we convert a numeric vector to a TimeSeries object then we can fill this value only by an estimator. The subclasses will throw an error if the constructor/resampling is triggered without a valid standard deviation, the rest works without it.
+
+- Before most functions start working they check the validity of the **TimeSeries** object by using **validObject()**.
+
+
 ### Resample function
-The resample function is a function which can be used to resample a time series. It takes a TimeSeries object as input and returns another Timeseries object having the same length, start values, parameters and standard deviation as the original time series.
+The resample function is a function which can be used to resample a time series. It takes a **TimeSeries** object as input and returns another Timeseries object having the same length, start values, parameters and standard deviation as the original time series.
 
 #### Examples of resampling
-We take the two generated from above, resample it and plot the original and the resampled one.
+We generate one TimeSeries of each Subclass, resample it and plot the original and the resampled ones.
 ```{r}
-ar1 <- AR(ar_params = c(0.3, 0.7), start_values = c(1,2), n = 30, sd = 1)
-plot_timeseries(ar1)
-plot_timeseries(resample(ar1))
+ar1 <- AR(ar_params = c(0.3, 0.7), start_values = c(0,0), n = 20, sd = 1)
+p1 <- plot_timeseries(ar1)
+p2 <- plot_timeseries(resample(ar1))
+(p1 )/( p2)
 ```
 ```{r}
-ma1 <- MA(ma_params = c(0.5, 0.7), n = 30, sd = 1)
-plot_timeseries(ma1)
-plot_timeseries(resample(ma1))
+ma1 <- MA(ma_params = c(0.5, 0.7), n = 20, sd = 1)
+p1 <- plot_timeseries(ma1)
+p2 <- plot_timeseries(resample(ma1))
+(p1 )/( p2)
 ```
 
 ### Helper Functions
