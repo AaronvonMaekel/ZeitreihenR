@@ -135,7 +135,7 @@ dow_data <- c(39110.76, 39512.13, 39781.37, 39475.90, 39313.64, 39282.33, 39760.
 print(dow_data)
 ```
 
-Assume we want to make a prediction for the next trading day (August 12th 2024). This can be done using the Durbin Levinson Algorithm or the Innovations Algorithm. In order to use them however, we will need to turn our raw data into a TimeSeries object. This can be done using the conversion with **as**: 
+Assume we want to make a prediction for the next trading day (12th of August 2024). This can be done using the Durbin Levinson Algorithm or the Innovations Algorithm. In order to use them however, we will need to turn our raw data into a TimeSeries object. This can be done using the conversion with **as**: 
 
 ```{r}
 dow_ts <- as(dow_data, "TimeSeries")
@@ -148,10 +148,10 @@ Having a TimeSeries object, we can now apply the predictor using the Durbin Levi
 DL_predictor(dow_ts, entire_ts = FALSE)
 ```
 
-The predictor function, which is based on the Innovations algorithm, yields the following result: 
+The predictor function, which is based on the innovations algorithm, yields the following result: 
 
 ```{r}
 innovations_predictor(dow_ts, entire_ts = FALSE)
 ```
 
-Note that the actual closing price was 39357. Both predictions are close to this, but did not quite get the exact closing price. This underlines the fact that making predictions for a time series (or the stock market) is non-trivial and needs some thoughtful consideration.
+Note that the actual closing price was 39357. Both predictions are close to this, but did not quite get the exact closing price. This underlines the fact that making predictions for a time series (or the stock market) is non-trivial and needs some thoughtful consideration. Furthermore, we again see that the Durbin Levinson algorithm and the innovations algorithm might yield different results and predictions when applied to the same time series.
