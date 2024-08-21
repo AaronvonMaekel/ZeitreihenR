@@ -50,10 +50,11 @@ plot_timeseries(ar_time_series)
 In order to plot a time series with prediction, one must first use one of the prediction algorithms and then use the plot_timeseries function with the additional argument *prd*:
 
 ```{r}
-ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n = 100)
-plot_timeseries(ar_time_series) 
-ar_pred <- DL_predictor(ar_time_series, pred_len=10, entire_ts = FALSE)
-plot_timeseries(ar_time_series, prd=ar_pred)
+ma_time_series <- MA(ma_params=c(0.6,0.6), n=100)
+plot_timeseries(ma_time_series)
+ma_pred <- DL_predictor(ma_time_series,pred_len = 5,entire_ts = FALSE)
+plot_timeseries(ma_time_series, prd=ma_pred)
+
 
 ```
 
