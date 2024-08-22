@@ -1,35 +1,42 @@
 Package: ZeitreihenR
-Title: Package for constructing TimeSeries objects, using different algorithms and visualisations
+Title: Package for constructing TimeSeries objects, using different
+    algorithms and visualisations
 Version: 1.0.0
-Authors@R: 
-    c( person("Eivind","Hjertholm",role = "aut", email = "xxx@stud.uni-heidelberg.de"),
-    person("Aaron","Mäkel", role = "cre", email = "cv234@stud.uni-heidelberg.de"),
-    person("Victoria" ," Mezger",role = "aut", email = "victoria.mezger@stud.uni-heidelberg.de"),
-    person("Julia"," Renner",role = "aut", email = "xxx@stud.uni-heidelberg.de"),
-    person("Klaus","Stier", role = "aut", email = "xxx@stud.uni-heidelberg.de"))
-Description: The package contains S4-classes as well as methods for time series and predictions for them. The definitions and methods are based on the book *Introduction to Time-Series Analysis and Forecasting* by Peter J. Brockwell and Richard A. Davis.
+Authors@R: c(
+    person("Eivind", "Hjertholm", , "xxx@stud.uni-heidelberg.de", role = "aut"),
+    person("Aaron", "Mäkel", , "cv234@stud.uni-heidelberg.de", role = "cre"),
+    person("Victoria", "Mezger", , "victoria.mezger@stud.uni-heidelberg.de", role = "aut"),
+    person("Julia", "Renner", , "xxx@stud.uni-heidelberg.de", role = "aut"),
+    person("Klaus", "Stier", , "xxx@stud.uni-heidelberg.de", role = "aut")
+  )
+Description: The package contains S4-classes as well as methods for time
+    series and predictions for them. The definitions and methods are based
+    on the book *Introduction to Time-Series Analysis and Forecasting* by
+    Peter J. Brockwell and Richard A. Davis.
 License: GPL (>= 3)
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 Imports:
-    methods,
-    tibble,
     ggplot2,
+    methods,
+    patchwork,
     stats,
-    patchwork
+    tibble
 Suggests: 
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
-VignetteBuilder: knitr
-Collate:
-  ZeitreihenR-package.R
-  Classes.R
-  SampleAutoCovarianceFunction.R
-  DurbinLevinson.R
-  InnovationsAlgorithm.R
-  Periodogram.R
-  Plots.R
-  SpectralDensity.R
+VignetteBuilder: 
+    knitr
 Config/testthat/edition: 3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Collate:
+    'ZeitreihenR-package.R'
+    'Classes.R'
+    'SampleAutoCovarianceFunction.R'
+    'DurbinLevinson.R'
+    'InnovationsAlgorithm.R'
+    'Periodogram.R'
+    'SpectralDensity.R'
+    'Plots.R'
+    
