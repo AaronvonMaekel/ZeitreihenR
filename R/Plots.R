@@ -37,6 +37,7 @@ plot_timeseries <- function(ts_obj, prd = NULL) {
         plt <- ggplot2::ggplot(data = tb, mapping = ggplot2::aes(x = Time, y = Value))
     }
     else {
+        stopifnot("Input is not a time series object"=is(prd,"TimeSeries"))
         header <- paste(header,"with prediction")
 
         #Validity check of prediction object
@@ -84,6 +85,10 @@ plot_SACVF <- function(ts_obj,acf=FALSE,max_lag=NULL) {
   # Validity check
   stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
   validObject(ts_obj)
+  stopifnot("acf not logical"=is.logical(acf))
+  stopifnot("max_lag not numeric"=is.numeric(max_lag))
+  stopifnot("max_lag not applicable"=length(max_lag) ==1)
+
 
   if(is.null(max_lag)){
     max_lag <- ts_obj@n-1

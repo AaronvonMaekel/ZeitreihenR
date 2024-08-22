@@ -7,7 +7,7 @@ test_that("Innovations_step works", {
   expect_error(innovations_step(matest, matrix(NA_real_)), "NA entry contained in matrix")
 })
 
-test_that("Innovations_predictor", {
+test_that("Innovations_predictor works", {
   matest <- MA(c(1,2), 10, 1)
   expect_error(innovations_predictor(1,1,TRUE), "Input is not a time series object")
   expect_error(innovations_predictor(matest, 1, "b"), "entire_ts not logical")
