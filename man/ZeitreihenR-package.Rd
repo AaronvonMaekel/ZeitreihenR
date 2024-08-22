@@ -9,7 +9,7 @@
 The package contains S4-classes as well as methods for time series and predictions for them. The definitions and methods are based on the book *Introduction to Time-Series Analysis and Forecasting* by Peter J. Brockwell and Richard A. Davis.
 }
 \author{
-\strong{Maintainer}: Aaron MC$kel \email{cv234@stud.uni-heidelberg.de}
+\strong{Maintainer}: Aaron Mäkel \email{cv234@stud.uni-heidelberg.de}
 
 Authors:
 \itemize{
