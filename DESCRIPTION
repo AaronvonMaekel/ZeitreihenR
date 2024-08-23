@@ -3,11 +3,11 @@ Title: Package for constructing TimeSeries objects, using different
     algorithms and visualisations
 Version: 1.0.0
 Authors@R: c(
-    person("Eivind", "Hjertholm", , "xxx@stud.uni-heidelberg.de", role = "aut"),
+    person("Eivind", "Hjertholm", , "eivind.hjertholm@stud.uni-heidelberg.de", role = "aut"),
     person("Aaron", "Mäkel", , "cv234@stud.uni-heidelberg.de", role = "cre"),
     person("Victoria", "Mezger", , "victoria.mezger@stud.uni-heidelberg.de", role = "aut"),
-    person("Julia", "Renner", , "xxx@stud.uni-heidelberg.de", role = "aut"),
-    person("Klaus", "Stier", , "xxx@stud.uni-heidelberg.de", role = "aut")
+    person("Julia", "Renner", , "julia.renner@stud.uni-heidelberg.de", role = "aut"),
+    person("Klaus", "Stier", , "tn237@stud.uni-heidelberg.de", role = "aut")
   )
 Description: The package contains S4-classes as well as methods for time
     series and predictions for them. The definitions and methods are based
