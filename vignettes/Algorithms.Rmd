@@ -57,9 +57,9 @@ The *DLA* method is used to predict a specified number of $\phi_i$. Based on the
 #### Example: Durbin Levinson with prediction
 
 ```{r}
-ar_ts <- AR(ar_params = 0.5, start_values = 1, n = 10, sd = 1)
-plot_timeseries(ar_ts)
-dl_pred <- DL_predictor(ar_ts, pred_len=10, entire_ts = FALSE)
+ma_ts <- MA(ma_params = 0.5, n = 50, sd = 1)
+plot_timeseries(ma_ts)
+dl_pred <- DL_predictor(ma_ts, pred_len=10, entire_ts = FALSE)
 plot_timeseries(dl_pred)
 ```
 
