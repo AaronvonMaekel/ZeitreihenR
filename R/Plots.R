@@ -8,8 +8,10 @@
 #'@return The return value is a plot of the time series.
 #'
 #'@examples
-#'ar_time_series <- AR(start_values = c(1, 1), ar_params = c(0.6, 0.6), sd = 1, n = 100)
-#'plot_timeseries(ar_time_series)
+#'ma_time_series <- MA(ma_params=c(0.6,0.6), n=100)
+#'plot_timeseries(ma_time_series)
+#'ma_pred <- DL_predictor(ma_time_series,pred_len = 5,entire_ts = FALSE)
+#'plot_timeseries(ma_time_series, prd=ma_pred)
 #'
 #'@export
 
