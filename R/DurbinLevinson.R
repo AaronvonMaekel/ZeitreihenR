@@ -44,8 +44,9 @@ DLA <- function(ts_obj){
 #'@return The return value is a \code{TimeSeries} object. Depending on the choice of \code{entire_ts}, we either obtain both the original time series with appended predictions or only the predictions made by the algorithm.
 #'
 #'@examples
-#'ar_ts <- AR(ar_params = 0.5, start_values = 1, n = 50, sd = 1)
-#'DL_predictor(ar_ts, pred_len=5, entire_ts = FALSE)
+#'ma_ts <- MA(ma_params = 0.5, n = 50, sd = 1)
+#'DL_predictor(ma_ts, pred_len=5, entire_ts = FALSE)
+#'
 #'@references  Peter J. Brockwell, Richard A. Davis (2016) \emph{Introduction to Time-Series Analysis and Forecasting}; Springer Verlag.
 #'@export
 
