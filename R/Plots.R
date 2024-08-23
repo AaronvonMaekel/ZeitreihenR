@@ -86,13 +86,16 @@ plot_SACVF <- function(ts_obj,acf=FALSE,max_lag=NULL) {
   stopifnot("Input is not a time series object"=is(ts_obj,"TimeSeries"))
   validObject(ts_obj)
   stopifnot("acf not logical"=is.logical(acf))
-  stopifnot("max_lag not numeric"=is.numeric(max_lag))
-  stopifnot("max_lag not applicable"=length(max_lag) ==1)
-
 
   if(is.null(max_lag)){
     max_lag <- ts_obj@n-1
   }
+
+  stopifnot("max_lag not numeric"=is.numeric(max_lag))
+  stopifnot("max_lag not applicable"=length(max_lag) ==1)
+
+
+
 
   # Extract data
   timeseries <- ts_obj@data
